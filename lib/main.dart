@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:thrifty/screens/sign_in_screen.dart';
+import 'theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp(appTheme: AppTheme(),));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.appTheme});
 
-  // This widget is the root of your application.
+  final AppTheme appTheme;
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/', routes: {
-      '/': (context) => const SignInScreen(),
-    });
+    return MaterialApp(
+        theme: appTheme.light,
+        darkTheme: appTheme.dark,
+        themeMode: ThemeMode.light,
+        debugShowCheckedModeBanner: false,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SignInScreen(),
+        });
   }
 }
-
