@@ -23,29 +23,20 @@ class SignInScreen extends StatelessWidget {
                           // key: _formKey,
                           child: Column(
                             children: [
-                              const Center(
+                              Center(
                                 child: Text(
                                   'Welcome Back',
-                                  style: TextStyle(
-                                      letterSpacing: 0.6,
-                                      fontSize: 30.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 4, 44, 76)),
+                                  style: Theme.of(context).textTheme.headline2,
                                 ),
                               ),
                               const SizedBox(
                                 height: 50.0,
                               ),
-                              const Align(
+                              Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   'Email',
-                                  style: TextStyle(
-                                      fontFamily: 'OpenSans',
-                                      letterSpacing: 0.6,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.normal,
-                                      color: Colors.grey),
+                                  style: Theme.of(context).textTheme.headline3,
                                 ),
                               ),
                               const SizedBox(
@@ -74,17 +65,11 @@ class SignInScreen extends StatelessWidget {
                               const SizedBox(
                                 height: 25.0,
                               ),
-                              const Align(
+                              Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     'Password',
-                                    style: TextStyle(
-                                        fontFamily: 'OpenSans',
-                                        letterSpacing: 0.6,
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.grey),
-                                  )),
+                                    style: Theme.of(context).textTheme.headline3),),
                               const SizedBox(
                                 height: 2.0,
                               ),
@@ -137,14 +122,17 @@ class SignInScreen extends StatelessWidget {
                                   //   }
                                   // }
                                   //     : null,
-                                  child: const Text('Sign in')),
+                                  child: Text('Sign in',
+                                  style: Theme.of(context).textTheme.headline1,)
+                              ),
                               const SizedBox(
                                 height: 10.0,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text("Dont have an account ?"),
+                                  Text("Dont have an account ?",
+                                  style: Theme.of(context).textTheme.headline3,),
                                   TextButton(
                                       style: TextButton.styleFrom(
                                           primary: Color.fromARGB(255, 4, 44, 76)),
@@ -155,7 +143,9 @@ class SignInScreen extends StatelessWidget {
                                                 builder: ((context) =>
                                                 const SignUpScreen())));
                                       },
-                                      child: const Text('Sign up'))
+                                      child: Text('Sign up',
+                                        style: Theme.of(context).textTheme.headline3,
+                                      ))
                                 ],
                               )
                             ],
@@ -168,10 +158,11 @@ class SignInScreen extends StatelessWidget {
           ),
           // if (_loading)
             Center(
-              child: SpinKitSquareCircle(
+              child: SpinKitChasingDots(
                 color: Theme.of(context).colorScheme.secondary,
-                size: 100.0,
-              ),
+                size: 50.0,
+
+              )
             )
         ],
     );

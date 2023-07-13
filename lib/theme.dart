@@ -36,10 +36,34 @@ class AppTheme {
   /// Light theme and its settings.
   ThemeData get light => ThemeData(
     brightness: Brightness.light,
-    colorScheme: lightBase.colorScheme.copyWith(secondary: AppColors.secondary),
+    colorScheme: lightBase.colorScheme.copyWith(primary: Colors.white, secondary: AppColors.secondary),
     visualDensity: visualDensity,
-    textTheme:
-    GoogleFonts.mulishTextTheme().apply(bodyColor: AppColors.textDark),
+    textTheme: TextTheme(
+    headline1: GoogleFonts.nunito(
+      textStyle:  const TextStyle(
+        color: Colors.white,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+    ),),
+    headline2: GoogleFonts.nunito(
+      textStyle: const TextStyle(
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.bold,
+        color: AppColors.secondary,
+        fontSize: 30
+      ),
+    ),
+      headline3: GoogleFonts.nunito(
+        textStyle: const TextStyle(
+            fontStyle: FontStyle.normal,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 16
+        ),
+      ),
+    ),
+    // GoogleFonts.mulishTextTheme().apply(bodyColor: AppColors.textDark),
     backgroundColor: _LightColors.background,
     appBarTheme: lightBase.appBarTheme.copyWith(
       iconTheme: lightBase.iconTheme,
@@ -59,17 +83,14 @@ class AppTheme {
         backgroundColor: AppColors.secondary,
           // primary: AppColors.secondary,
           minimumSize: const Size.fromHeight(50),
-          textStyle: const TextStyle(
+          textStyle: GoogleFonts.nunito(
+              textStyle: const TextStyle(
               color: Colors.white,
               fontSize: 20,
-              fontFamily: 'OpenSans',
-              fontWeight: FontWeight.bold))
+              fontWeight: FontWeight.bold)))
       ),
 
     // cardColor: _LightColors.card,
-    primaryTextTheme: const TextTheme(
-      headline6: TextStyle(color: AppColors.textDark),
-    ),
 
     iconTheme: const IconThemeData(color: AppColors.iconDark),
   );
@@ -77,29 +98,60 @@ class AppTheme {
   /// Dark theme and its settings.
   ThemeData get dark => ThemeData(
     brightness: Brightness.dark,
-    colorScheme: darkBase.colorScheme.copyWith(secondary: accentColor),
+    colorScheme: darkBase.colorScheme.copyWith(primary: Colors.black, secondary: Colors.white),
     visualDensity: visualDensity,
-    textTheme:
-    GoogleFonts.interTextTheme().apply(bodyColor: AppColors.textLight),
+    // textTheme:
+    // GoogleFonts.interTextTheme().apply(bodyColor: AppColors.textLight),
+    textTheme: TextTheme(
+      headline1: GoogleFonts.nunito(
+        textStyle:  const TextStyle(
+          color: Colors.black,
+          fontStyle: FontStyle.normal,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),),
+      headline2: GoogleFonts.nunito(
+        textStyle: const TextStyle(
+            fontStyle: FontStyle.normal,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 30
+        ),
+      ),
+      headline3: GoogleFonts.nunito(
+        textStyle: const TextStyle(
+            fontStyle: FontStyle.normal,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: 16
+        ),
+      ),),
     backgroundColor: _DarkColors.background,
     appBarTheme: darkBase.appBarTheme.copyWith(
       backgroundColor: Colors.transparent,
       elevation: 0,
       centerTitle: true,
-      titleTextStyle: const TextStyle(
+      titleTextStyle: GoogleFonts.nunito(
+      textStyle: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 17,
-      ),
+      ),),
       systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
     scaffoldBackgroundColor: _DarkColors.background,
     elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(primary: Colors.white),
+        style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.white,
+            minimumSize: const Size.fromHeight(50),
+            textStyle: GoogleFonts.nunito(
+                textStyle: const TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold)))
     ),
     // cardColor: _DarkColors.card,
-    primaryTextTheme: const TextTheme(
-      headline6: TextStyle(color: AppColors.textLight),
-    ),
+
+
     iconTheme: const IconThemeData(color: AppColors.iconLight),
   );
 }
