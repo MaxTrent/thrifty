@@ -89,6 +89,9 @@ class AppTheme {
               fontSize: 20,
               fontWeight: FontWeight.bold)))
       ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      selectedItemColor: AppColors.secondary
+    ),
 
     // cardColor: _LightColors.card,
 
@@ -148,6 +151,9 @@ class AppTheme {
                 color: Colors.black,
                 fontSize: 20,
                 fontWeight: FontWeight.bold)))
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        selectedItemColor: Colors.white
     ),
     // cardColor: _DarkColors.card,
 

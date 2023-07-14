@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:thrifty/screens/screens.dart';
-
-import '../theme.dart';
+import 'package:thrifty/widgets/widgets.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({super.key});
@@ -157,12 +156,8 @@ class SignInScreen extends StatelessWidget {
             ),
           ),
           // if (_loading)
-            Center(
-              child: SpinKitChasingDots(
-                color: Theme.of(context).colorScheme.secondary,
-                size: 50.0,
-
-              )
+            const Center(
+              child: LoadingIndicator()
             )
         ],
     );

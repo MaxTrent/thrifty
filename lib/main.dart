@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:thrifty/screens/sign_in_screen.dart';
+import 'package:thrifty/pages/pages.dart';
+import 'package:thrifty/screens/screens.dart';
 import 'theme.dart';
 
 void main() {
@@ -16,11 +17,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: appTheme.light,
         darkTheme: appTheme.dark,
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
           '/': (context) => const SignInScreen(),
+          '/homepage': (context) => const HomePage()
         });
   }
 }

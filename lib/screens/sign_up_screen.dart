@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../pages/pages.dart';
+import '../widgets/widgets.dart';
+
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -32,16 +35,11 @@ class SignUpScreen extends StatelessWidget {
                           const SizedBox(
                             height: 80.0,
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Firstname',
-                              style: TextStyle(
-                                  fontFamily: 'OpenSans',
-                                  letterSpacing: 0.6,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey),
+                              style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.grey),
                             ),
                           ),
                           const SizedBox(
@@ -70,16 +68,11 @@ class SignUpScreen extends StatelessWidget {
                           const SizedBox(
                             height: 25.0,
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Lastname',
-                              style: TextStyle(
-                                  fontFamily: 'OpenSans',
-                                  letterSpacing: 0.6,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey),
+                              style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.grey),
                             ),
                           ),
                           const SizedBox(
@@ -108,16 +101,11 @@ class SignUpScreen extends StatelessWidget {
                           const SizedBox(
                             height: 25.0,
                           ),
-                          const Align(
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Email',
-                              style: TextStyle(
-                                  fontFamily: 'OpenSans',
-                                  letterSpacing: 0.6,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.grey),
+                              style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.grey),
                             ),
                           ),
                           const SizedBox(
@@ -147,16 +135,11 @@ class SignUpScreen extends StatelessWidget {
                           const SizedBox(
                             height: 25.0,
                           ),
-                          const Align(
+                          Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Password',
-                                style: TextStyle(
-                                    fontFamily: 'OpenSans',
-                                    letterSpacing: 0.6,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.grey),
+                                style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.grey),
                               )),
                           const SizedBox(
                             height: 2.0,
@@ -192,21 +175,18 @@ class SignUpScreen extends StatelessWidget {
                           const SizedBox(
                             height: 25.0,
                           ),
-                          const Text(
+                          Text(
                             'Creating an account means you agree to the Terms of Service and our Privacy Policy',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: 'OpenSans',
-                                letterSpacing: 0.2,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.grey),
+                            style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.grey),
                           ),
                           const SizedBox(
                             height: 25.0,
                           ),
                           ElevatedButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (c)=> HomePage()));
+                              },
                               // !_loading
                               //     ? () {
                               //   if (_formKey.currentState!.validate()) {
@@ -235,7 +215,7 @@ class SignUpScreen extends StatelessWidget {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text('Sign in',
+                                  child:  Text('Sign in',
                                   style: Theme.of(context).textTheme.headline3,)),
                             ],
                           )
@@ -247,12 +227,8 @@ class SignUpScreen extends StatelessWidget {
               )),
         ),
         // if (_loading)
-        Center(
-            child: SpinKitChasingDots(
-              color: Theme.of(context).colorScheme.secondary,
-              size: 50.0,
-
-            )
+        const Center(
+            child: LoadingIndicator()
         )
       ]);
   }
