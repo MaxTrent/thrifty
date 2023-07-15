@@ -17,12 +17,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: appTheme.light,
         darkTheme: appTheme.dark,
-        themeMode: ThemeMode.dark,
+        themeMode: ThemeMode.light,
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
           '/': (context) => const SignInScreen(),
-          '/homepage': (context) => const HomePage()
+          '/homepage': (context) => const HomePage(),
+          '/userpage': (context) => const UserPage(),
         });
   }
 }

@@ -134,7 +134,8 @@ class SignInScreen extends StatelessWidget {
                                   style: Theme.of(context).textTheme.headline3,),
                                   TextButton(
                                       style: TextButton.styleFrom(
-                                          primary: Color.fromARGB(255, 4, 44, 76)),
+                                          // primary: Color.fromARGB(255, 4, 44, 76)
+    ),
                                       onPressed: () {
                                         Navigator.push(
                                             context,

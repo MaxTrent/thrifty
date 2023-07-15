@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/models.dart';
@@ -23,6 +24,7 @@ class _DashboardPageState extends State<DashboardPage> {
       children: [
         Scaffold(
           body: RefreshIndicator(
+            color: Theme.of(context).colorScheme.secondary,
             onRefresh: () {
               return getAllData();
             },
@@ -38,9 +40,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       Row(
                         children: [
                           Padding(
-                              padding: EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
-                              child:
-                              _imageLoaded
+                              padding:
+                                  const EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
+                              child: _imageLoaded
                                   ? InkWell(
                                       onTap: () {
                                         Navigator.pushNamed(
@@ -121,8 +123,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       ),
                                       Align(
                                         alignment: Alignment.topLeft,
-                                        child: Text(
-                                          'Sapa',
+                                        child: Text('Sapa',
                                             // totalAmt,
                                             style: const TextStyle(
                                                 letterSpacing: 0.5,
@@ -292,7 +293,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                                                   primary: Color.fromARGB(255, 4, 44, 76),
                                                                                   minimumSize: const Size.fromHeight(60),
                                                                                   textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                                                                              onPressed: (){},
+                                                                              onPressed: () {},
                                                                               // !_loading
                                                                               //     ? () {
                                                                               //         if (_formKey.currentState!.validate()) {
@@ -389,7 +390,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
                                       ),
-                                      onPressed: (){},
+                                      onPressed: () {},
                                       // () {
                                       //   Navigator.push(
                                       //     context,
@@ -417,55 +418,51 @@ class _DashboardPageState extends State<DashboardPage> {
                                       builder: (BuildContext context,
                                           AsyncSnapshot<List<Budgets>>
                                               snapshot) {
-                                        if (snapshot.connectionState ==
-                                                ConnectionState.done &&
-                                            retrievedBudgetList?.isEmpty ==
-                                                null) {
-                                          const Center(
-                                            child: Text(
-                                              'No Budgets Yet',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 20.0),
-                                            ),
-                                          );
-                                        }
-                                        if (retrievedBudgetList?.isEmpty ??
-                                            true) {
-                                          return const Center(
-                                            child: Text(
-                                              'No Budgets Yet',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 20.0),
-                                            ),
-                                          );
-                                        }
-                                        if (snapshot.hasData &&
-                                            snapshot.data != null) {
-                                          return Center(
-                                            child: ListView.separated(
-                                              shrinkWrap: true,
-                                              separatorBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return const SizedBox(
-                                                    height: 15);
-                                              },
-                                              primary: false,
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount:
-                                                  retrievedBudgetList?.length ??
-                                                      0,
-                                              itemBuilder: _itemBuilder,
-                                            ),
-                                          );
-                                        } else {
-                                          return const Center(
-                                            child: LoadingIndicator(),
-                                          );
-                                        }
-                                      }),
+                                    if (snapshot.connectionState ==
+                                            ConnectionState.done &&
+                                        retrievedBudgetList?.isEmpty == null) {
+                                      const Center(
+                                        child: Text(
+                                          'No Budgets Yet',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 20.0),
+                                        ),
+                                      );
+                                    }
+                                    if (retrievedBudgetList?.isEmpty ?? true) {
+                                      return const Center(
+                                        child: Text(
+                                          'No Budgets Yet',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 20.0),
+                                        ),
+                                      );
+                                    }
+                                    if (snapshot.hasData &&
+                                        snapshot.data != null) {
+                                      return Center(
+                                        child: ListView.separated(
+                                          shrinkWrap: true,
+                                          separatorBuilder:
+                                              (BuildContext context,
+                                                  int index) {
+                                            return const SizedBox(height: 15);
+                                          },
+                                          primary: false,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount:
+                                              retrievedBudgetList?.length ?? 0,
+                                          itemBuilder: _itemBuilder,
+                                        ),
+                                      );
+                                    } else {
+                                      return const Center(
+                                        child: LoadingIndicator(),
+                                      );
+                                    }
+                                  }),
                                 ),
                               )
                             ]),
@@ -487,7 +484,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                               fontSize: 18,
                                               fontWeight: FontWeight.w600),
                                         ),
-                                        onPressed: (){},
+                                        onPressed: () {},
                                         //     () {
                                         //   Navigator.push(
                                         //     context,
@@ -513,56 +510,54 @@ class _DashboardPageState extends State<DashboardPage> {
                                         builder: (BuildContext context,
                                             AsyncSnapshot<List<Transactions>>
                                                 snapshot) {
-                                          if (snapshot.connectionState ==
-                                                  ConnectionState.done &&
+                                      if (snapshot.connectionState ==
+                                              ConnectionState.done &&
+                                          retrievedTransactionsCreditList
+                                                  ?.isEmpty ==
+                                              null) {
+                                        const Center(
+                                          child: Text(
+                                            'No Transactions Yet',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 20.0),
+                                          ),
+                                        );
+                                      }
+                                      if (retrievedTransactionsCreditList
+                                              ?.isEmpty ??
+                                          true) {
+                                        return const Center(
+                                          child: Text(
+                                            'No Transactions Yet',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 20.0),
+                                          ),
+                                        );
+                                      }
+                                      if (snapshot.hasData &&
+                                          snapshot.data != null) {
+                                        return ListView.separated(
+                                          shrinkWrap: true,
+                                          separatorBuilder:
+                                              (BuildContext context,
+                                                  int index) {
+                                            return const SizedBox(height: 15);
+                                          },
+                                          primary: false,
+                                          scrollDirection: Axis.vertical,
+                                          itemCount:
                                               retrievedTransactionsCreditList
-                                                      ?.isEmpty ==
-                                                  null) {
-                                            const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
-                                          if (retrievedTransactionsCreditList
-                                                  ?.isEmpty ??
-                                              true) {
-                                            return const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
-                                          if (snapshot.hasData &&
-                                              snapshot.data != null) {
-                                            return ListView.separated(
-                                              shrinkWrap: true,
-                                              separatorBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return const SizedBox(
-                                                    height: 15);
-                                              },
-                                              primary: false,
-                                              scrollDirection: Axis.vertical,
-                                              itemCount:
-                                                  retrievedTransactionsCreditList
-                                                          ?.length ??
-                                                      0,
-                                              itemBuilder:
-                                                  _transactionItemBuilder,
-                                            );
-                                          } else {
-                                            return const Center(
-                                                child: LoadingIndicator());
-                                          }
-                                        }),
+                                                      ?.length ??
+                                                  0,
+                                          itemBuilder: _transactionItemBuilder,
+                                        );
+                                      } else {
+                                        return const Center(
+                                            child: LoadingIndicator());
+                                      }
+                                    }),
                                   ),
                                 ),
                               ],
@@ -590,7 +585,13 @@ class _DashboardPageState extends State<DashboardPage> {
     return Container();
   }
 
-  CachedNetworkImage({required Container Function(dynamic context, dynamic imageProvider) imageBuilder, required CircularProgressIndicator Function(dynamic context, dynamic url) placeholder, required Icon Function(dynamic context, dynamic url, dynamic error) errorWidget}) {}
+  CachedNetworkImage(
+      {required Container Function(dynamic context, dynamic imageProvider)
+          imageBuilder,
+      required CircularProgressIndicator Function(dynamic context, dynamic url)
+          placeholder,
+      required Icon Function(dynamic context, dynamic url, dynamic error)
+          errorWidget}) {}
 }
 
 Future<void> getAllData() async {
