@@ -1,10 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:thrifty/pages/pages.dart';
 import 'package:thrifty/screens/screens.dart';
+import 'firebase_options.dart';
 import 'theme.dart';
 
-void main() {
-  runApp(MyApp(appTheme: AppTheme(),));
+Future<void> main() async{
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+      MyApp(appTheme: AppTheme(),));
 }
 
 class MyApp extends StatelessWidget {

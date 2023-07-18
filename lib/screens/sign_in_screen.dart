@@ -8,6 +8,11 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
+    bool _obscureText = true;
+
     return Stack(
         children: [
           Scaffold(
@@ -19,7 +24,7 @@ class SignInScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(25.0),
                         child: Form(
-                          // key: _formKey,
+                          key: _formKey,
                           child: Column(
                             children: [
                               Center(
@@ -42,7 +47,7 @@ class SignInScreen extends StatelessWidget {
                                 height: 2.0,
                               ),
                               TextFormField(
-                                // controller: _emailController,
+                                controller: _emailController,
                                 decoration: const InputDecoration(
                                   prefixIcon: Icon(Icons.mail_outline),
                                   border: OutlineInputBorder(),
@@ -73,8 +78,8 @@ class SignInScreen extends StatelessWidget {
                                 height: 2.0,
                               ),
                               TextFormField(
-                                // controller: _passwordController,
-                                // obscureText: _obscureText,
+                                controller: _passwordController,
+                                obscureText: _obscureText,
                                 decoration: InputDecoration(
                                     prefixIcon: const Icon(Icons.password),
                                     suffixIcon: IconButton(
@@ -125,7 +130,7 @@ class SignInScreen extends StatelessWidget {
                                   style: Theme.of(context).textTheme.headline1,)
                               ),
                               const SizedBox(
-                                // height: 10.0,
+                                height: 10.0,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

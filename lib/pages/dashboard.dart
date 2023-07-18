@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:thrifty/data/data.dart';
 
+// import 'package:flutter/services.dart';
 import '../models/models.dart';
 import '../widgets/widgets.dart';
 
@@ -11,12 +14,28 @@ class DashboardPage extends StatefulWidget {
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _DashboardPageState extends State<DashboardPage>
+    with TickerProviderStateMixin {
+  DatabaseService service = DatabaseService();
+  String totalAmt = '₦ 0.0',
+      budgetAmt = '₦ 0.0',
+      dailyAmt = '₦ 0.0',
+      weeklyAmt = '₦ 0.0',
+      amtSpent = '₦ 0.0',
+      totalAmountSpentFormatted = '₦ 0.0';
   final bool _imageLoaded = false;
   late List budgetsList;
   late List retrievedBudgetList;
   late List transactionsCreditList;
   late List retrievedTransactionsCreditList;
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 2, vsync: this);
+    getAllData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -578,7 +597,153 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _transactionItemBuilder(BuildContext context, int index) {
-    return Container();
+    var transactionAmt = NumberFormat.currency(locale: "en_NG", symbol: "₦")
+        .format(double.parse(
+            retrievedTransactionsCreditList![index].transactionAmount));
+
+    String transactionName =
+        retrievedTransactionsCreditList![index].transactionTitle;
+    String imageText = '';
+
+    var names = transactionName.split(' ');
+    if (names.length >= 2) {
+      imageText = (names[0][0] + names[1][0]).toUpperCase();
+    } else {
+      imageText =
+          (names[0][0] + names[0][(transactionName.length - 1)]).toUpperCase();
+    }
+    String formattedTransacDate = DateFormat.yMMMd()
+        .format(retrievedTransactionsCreditList![index].transactionDate);
+
+    String formattedTransacTime = DateFormat.Hm()
+        .format(retrievedTransactionsCreditList![index].transactionDate);
+
+    bool isSameDate = true;
+    final DateTime presentDate =
+        retrievedTransactionsCreditList![index].transactionDate;
+
+    if (service.daysBetween(
+            retrievedTransactionsCreditList![index].transactionDate,
+            DateTime.now()) ==
+        0) {
+      formattedTransacDate = 'Today';
+    } else if (service.daysBetween(
+            retrievedTransactionsCreditList![index].transactionDate,
+            DateTime.now()) ==
+        1) {
+      formattedTransacDate = 'Yesterday';
+    }
+
+    if (index == 0) {
+      isSameDate = false;
+    } else {
+      final DateTime prevDate =
+          retrievedTransactionsCreditList![index - 1].transactionDate;
+      final DateTime presentDate =
+          retrievedTransactionsCreditList![index].transactionDate;
+      isSameDate = service.isSameDate(presentDate, prevDate);
+    }
+
+    if (index == 0 || !(isSameDate)) {
+      isSameDate = false;
+    }
+
+    return InkWell(
+      onTap: () {},
+      child: Column(
+        children: [
+          Visibility(
+              visible: !isSameDate,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    formattedTransacDate,
+                    style: TextStyle(
+                        color: Colors.grey[800],
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.0),
+                  ),
+                ),
+              )),
+          Container(
+            height: 65.0,
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: Color.fromARGB(255, 223, 220, 220),
+                ),
+                borderRadius: BorderRadius.circular(15.0)),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10.0, 0, 15.0, 0),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    minRadius: 25.0,
+                    child: Text(imageText),
+                  ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              transactionName,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 8.0,
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                retrievedTransactionsCreditList![index]
+                                    .transactionDescription,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[700],
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '+  $transactionAmt',
+                              style: TextStyle(
+                                  color: Colors.green[900],
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 8.0,
+                            ),
+                            Text(
+                              formattedTransacTime,
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w500),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _itemBuilder(BuildContext context, int index) {

@@ -78,6 +78,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  currency_text_input_formatter:
+    dependency: "direct main"
+    description:
+      name: currency_text_input_formatter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.10"
   fake_async:
     dependency: transitive
     description:
@@ -99,8 +106,29 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.4"
-  firebase_core:
+  firebase_auth:
+    dependency: "direct main"
+    description:
+      name: firebase_auth
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.7.0"
+  firebase_auth_platform_interface:
     dependency: transitive
+    description:
+      name: firebase_auth_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.16.0"
+  firebase_auth_web:
+    dependency: transitive
+    description:
+      name: firebase_auth_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.6.0"
+  firebase_core:
+    dependency: "direct main"
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
