@@ -14,24 +14,19 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  @override
-  Widget build(BuildContext context) {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    final _formKey = GlobalKey<FormState>();
-    final _messengerKey = GlobalKey<ScaffoldMessengerState>();
-    final _firstNameController = TextEditingController();
-    final _lastNameController = TextEditingController();
-    final _emailController = TextEditingController();
-    final _passwordController = TextEditingController();
-    bool _loading = false;
-    bool _obscureText = true;
-    String firstName = _firstNameController.text.toString();
-    String lastName = _lastNameController.text.toString();
-    String email = _emailController.text.toString();
-    String pword = _passwordController.text.toString();
+  bool _obscureText = true;
+  bool _loading = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
+  final _messengerKey = GlobalKey<ScaffoldMessengerState>();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
 
-    void error(errorMessage) {
+  void error(errorMessage) {
+    if (_messengerKey.currentState != null){
       _messengerKey.currentState!.showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.red[600],
@@ -42,102 +37,117 @@ class _SignUpScreenState extends State<SignUpScreen> {
           )));
     }
 
-    Future<bool> sendToDB(firstname, lastname, email) async {
-      User? user = auth.currentUser;
-      if (user!.uid.isNotEmpty) {
-        try {
-          CollectionReference users = FirebaseFirestore.instance.collection(
-              'users');
-          await users.add({
-            "firstname": firstname,
-            "lastname": lastname,
-            "email": email,
-            "userId": user.uid,
-            "amount": 0,
-            "amountReset": 0,
-            "lastResetTime": DateTime.now()
-          }
-          );
-          return true;
-        } catch (e) {
-          return false;
+  }
+
+  Future<bool> sendToDB(firstname, lastname, email) async {
+    User? user = auth.currentUser;
+    if (user!.uid.isNotEmpty) {
+      try {
+        CollectionReference users = FirebaseFirestore.instance.collection(
+            'users');
+        await users.add({
+          "firstname": firstname,
+          "lastname": lastname,
+          "email": email,
+          "userId": user.uid,
+          "amount": 0,
+          "amountReset": 0,
+          "lastResetTime": DateTime.now()
         }
-      }
-      return false;
-    }
-
-
-    Future<bool> doesUserAlreadyExist(String uid) async {
-      final dynamic values = await FirebaseFirestore.instance
-          .collection("users")
-          .where('userId', isEqualTo: uid)
-          .limit(1)
-          .get();
-
-      if (values.size >= 1) {
+        );
         return true;
-      } else {
+      } catch (e) {
         return false;
       }
     }
+    return false;
+  }
 
-    Future<void> register(username, password) async {
-      try {
-        final credential = await auth.createUserWithEmailAndPassword(
-            email: email, password: password).then((value) =>
-            print('user with user id ${value.user!.uid} is logged in'));
+  Future<bool> doesUserAlreadyExist(String uid) async {
+    final dynamic values = await FirebaseFirestore.instance
+        .collection("users")
+        .where('userId', isEqualTo: uid)
+        .limit(1)
+        .get();
 
-        bool addData = await sendToDB(firstName, lastName, email);
+    if (values.size >= 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> signUp(username, password) async {
+    String firstName = _firstNameController.text.toString();
+    String lastName = _lastNameController.text.toString();
+    String email = _emailController.text.toString();
+    // String pword = _passwordController.text.toString();
+    try {
+      final credential = await auth.createUserWithEmailAndPassword(
+          email: username, password: password).then((value) =>
+          print('user with user id ${value.user!.uid} is logged in'));
+
+      bool addData = await sendToDB(firstName, lastName, email);
+      if (kDebugMode) {
         print('add data ${addData.toString()}');
-        if (addData == true) {
-          Navigator.pushReplacementNamed(context, '/homepage');
-        }
-        else {
-          error('Error signing up');
-        }
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          error('Password is weak');
-        }
-        else if (e.code == 'email-already-in-use') {
-          User? user = auth.currentUser;
-          if (user!.uid.isNotEmpty) {
-            bool userExist = await doesUserAlreadyExist(user.uid);
-            if (userExist == true) {
-              error('This account exists');
-            }
-            else {
-              bool addData = await sendToDB(firstName, lastName, email);
-              print('add data ${addData.toString()}');
-              if (addData == true) {
-                Navigator.pushReplacementNamed(context, '/homepage');
-              } else {
-                error('Error signing user up');
-              }
-            }
-          } else {
+      }
+      if (addData == true) {
+        Navigator.pushReplacementNamed(context, '/homepage');
+      }
+      else {
+        error('Error signing up');
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        error('Password is weak');
+      }
+      else if (e.code == 'email-already-in-use') {
+        User? user = auth.currentUser;
+        if (user!.uid.isNotEmpty) {
+          bool userExist = await doesUserAlreadyExist(user.uid);
+          if (userExist == true) {
             error('This account exists');
           }
-        } else if (e.code == 'invalid-email') {
-          error('Invalid Email');
-        } else {
-          error(e.message);
-          if (kDebugMode) {
-            print(e);
+          else {
+            bool addData = await sendToDB(firstName, lastName, email);
+            print('add data ${addData.toString()}');
+            if (addData == true) {
+              Navigator.pushReplacementNamed(context, '/homepage');
+            } else {
+              error('Error signing user up');
+            }
           }
+        } else {
+          error('This account exists');
         }
-      } catch (e) {
-        if (kDebugMode) {
-          print(e);
-        }
+      } else if (e.code == 'invalid-email') {
+        error('Invalid Email');
+      } else {
+        error(e.message);
+        print(e);
       }
+    } catch (e) {
 
-      setState(() {
-        _loading = false;
-      });
+      print(e);
+
     }
 
+    setState(() {
+      _loading = false;
+    });
+  }
 
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
         body: SafeArea(
@@ -146,7 +156,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Padding(
                   padding: const EdgeInsets.all(25.0),
                   child: Form(
-                    // key: _formKey,
+                    key: _formKey,
                     child: Column(
                       children: [
                         const SizedBox(
@@ -298,14 +308,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           decoration: InputDecoration(
                               prefixIcon: const Icon(CupertinoIcons.lock),
                               suffixIcon: IconButton(
-                                  onPressed: () {
+                                  onPressed: () =>
                                     setState(() {
                                       _obscureText = !_obscureText;
-                                    });
-                                  },
-                                  icon: Icon(_obscureText
-                                      ? Icons.visibility
-                                      : Icons.visibility_off)),
+                                    }),
+                                  icon: Icon(_obscureText ? Icons.visibility: Icons.visibility_off)),
                               border: const OutlineInputBorder(),
                               hintText: '*******'),
                           inputFormatters: [
@@ -338,15 +345,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             // Navigator.push(context, MaterialPageRoute(builder: (c)=> HomePage()));
 
                             !_loading
-                                ? () {
-                              if (_formKey.currentState!.validate()) {
+                                ?
+                            () {
+                              if (_formKey.currentState != null && _formKey.currentState!.validate())
+                              {
                                 setState(() {
                                   _loading = true;
                                 });
-                                register(email,
-                                    pword);
-                              }
-                            }
+                                signUp(_emailController.text.toString(),
+                                    _passwordController.text.toString());
+                              }else
+                                (print('not validated'));}
+
                                 : null,
                             child: Text(
                               'Create Account',
