@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thrifty/models/models.dart';
@@ -8,9 +9,9 @@ import 'package:thrifty/models/models.dart';
 
 class DatabaseService {
   FirebaseFirestore _db = FirebaseFirestore.instance;
-  // FirebaseAuth auth = FirebaseAuth.instance;
-  // User? user;
-  var user;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  User? user;
+
 
   DatabaseService() {
     // user = auth.currentUser;

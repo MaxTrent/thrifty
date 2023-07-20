@@ -25,7 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    // checkIfSignedIn();
+    checkIfSignedIn();
   }
 
   @override
@@ -66,7 +66,6 @@ class _SignInScreenState extends State<SignInScreen> {
         if (kDebugMode) {
           print('No user found');
         }
-
       } else if (e.code == 'too-many-requests') {
         error(
             'Account has been temporarily disabled due to too many failed attempts');
@@ -75,7 +74,6 @@ class _SignInScreenState extends State<SignInScreen> {
         if (kDebugMode) {
           print(e);
         }
-
       }
     } catch (e) {
       error(e);
@@ -93,10 +91,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (_messengerKey.currentState != null) {
         _messengerKey.currentState!.showSnackBar(
           SnackBar(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
+            width: MediaQuery.of(context).size.width,
             behavior: SnackBarBehavior.floating,
             backgroundColor: Colors.red[600],
             elevation: 0,
@@ -113,6 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+
       children: [
         Scaffold(
           body: Center(
