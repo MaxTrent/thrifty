@@ -3,9 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:thrifty/data/data.dart';
 import '../models/models.dart';
+import '../screens/screens.dart';
 import '../widgets/widgets.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -24,6 +27,7 @@ class _DashboardPageState extends State<DashboardPage>
       weeklyAmt = '₦ 0.0',
       amtSpent = '₦ 0.0',
       totalAmountSpentFormatted = '₦ 0.0';
+  late double percent;
   bool _imageLoaded = false;
   final _formKey = GlobalKey<FormState>();
   late List budgetsList;
@@ -52,16 +56,20 @@ class _DashboardPageState extends State<DashboardPage>
   Future<void> getDefaultValues() async {
     User? user = auth.currentUser;
 
-    await FirebaseFirestore.instance.collection('users').where(
-        'userId', isEqualTo: user!.uid).limit(1).get().then((value) =>
-        value.docs.forEach((doc) {
-          final data = doc.data()['data'].toString();
-          var currencyFormat = NumberFormat.currency(
-              locale: "en_NG", symbol: "₦").format(double.parse(data));
-          setState(() {
-            totalAmt = currencyFormat.toString();
-          });
-        }));
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where('userId', isEqualTo: user!.uid)
+        .limit(1)
+        .get()
+        .then((value) => value.docs.forEach((doc) {
+              final data = doc.data()['data'].toString();
+              var currencyFormat =
+                  NumberFormat.currency(locale: "en_NG", symbol: "₦")
+                      .format(double.parse(data));
+              setState(() {
+                totalAmt = currencyFormat.toString();
+              });
+            }));
 
     if (user.photoURL!.isEmpty && user.photoURL == null) {
       setState(() {
@@ -72,12 +80,12 @@ class _DashboardPageState extends State<DashboardPage>
 
       img.image.resolve(ImageConfiguration()).addListener(
           ImageStreamListener((ImageInfo image, bool synchronousCall) {
-            if (mounted) {
-              setState(() {
-                _imageLoaded = true;
-              });
-            }
-          }));
+        if (mounted) {
+          setState(() {
+            _imageLoaded = true;
+          });
+        }
+      }));
       service.checkResetTime();
 
       setState(() {
@@ -86,9 +94,7 @@ class _DashboardPageState extends State<DashboardPage>
     }
   }
 
-  deleteBudget(String budgetName, double remainingAmt, String reason){
-
-  }
+  deleteBudget(String budgetName, double remainingAmt, String reason) {}
 
   Widget _itemBuilder(BuildContext context, int index) {
     DateTime start = DateTime.parse(retrievedBudgetList![index].startDate);
@@ -97,26 +103,250 @@ class _DashboardPageState extends State<DashboardPage>
     int daysFromToday = service.daysBetween(DateTime.now(), end);
     int daysFromStart = service.daysBetween(start, DateTime.now()) + 1;
     double amountSpent = 0.0;
-    double remainAmount = 0.0;
-    if (daysFromStart.isNegative){
+    double remainingAmount = 0.0;
+    if (daysFromStart.isNegative) {
       amountSpent = 0;
     } else {
       if (daysFromToday == 0) {
-        deleteBudget(retrievedBudgetList[index].budgetName, 0, 'Completed');
+        deleteBudget(retrievedBudgetList![index].budgetName, 0, 'Completed');
       } else {
-        if (daysFromStart > 0){
-          amountSpent = double.parse(retrievedBudgetList![index].dailyLimit) * daysFromStart;
+        if (daysFromStart > 0) {
+          amountSpent = double.parse(retrievedBudgetList![index].dailyLimit) *
+              daysFromStart;
         }
       }
     }
 
-    return SizedBox();
+    budgetAmt = NumberFormat.currency(locale: "en_NG", symbol: "₦")
+        .format(double.parse(retrievedBudgetList![index].budgetAmount));
+    dailyAmt = NumberFormat.currency(locale: "en_NG", symbol: "₦")
+        .format(double.parse(retrievedBudgetList![index].dailyLimit));
+    weeklyAmt = NumberFormat.currency(locale: "en_NG", symbol: "₦")
+        .format(double.parse(retrievedBudgetList![index].weeklyLimit));
+    amtSpent =
+        NumberFormat.currency(locale: "en_NG", symbol: "₦").format(amountSpent);
+
+    percent =
+        amountSpent / double.parse(retrievedBudgetList![index].budgetAmount);
+    if (percent >= 2.0) {
+      percent = 1.0;
+    }
+    remainingAmount =
+        (double.parse(retrievedBudgetList![index].budgetAmount)) - amountSpent;
+
+    return SizedBox(
+      width: 350,
+      child: Card(
+        elevation: 0.5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: InkWell(
+          onTap: () {
+            showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                enableDrag: false,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(35.0),
+                  ),
+                ),
+                builder: (BuildContext context) =>
+                    StatefulBuilder(builder: (context, setModalState) {
+                      return Padding(
+                          padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom),
+                          child: Container(
+                            padding: const EdgeInsets.all(25.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 40.0,
+                                ),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        primary:
+                                            Color.fromARGB(255, 35, 63, 105),
+                                        minimumSize: const Size.fromHeight(60),
+                                        textStyle: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700)),
+                                    onPressed: () {
+                                      Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const AddBudget(),
+                                                  settings: RouteSettings(
+                                                      arguments:
+                                                          retrievedBudgetList![
+                                                              index])))
+                                          .then((_) {
+                                        setState(() {
+                                          getAllData();
+                                        });
+                                      });
+                                    },
+                                    child: Text('Edit Budget')),
+                                SizedBox(
+                                  height: 50.0,
+                                ),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      primary: Colors.red[900],
+                                      minimumSize: const Size.fromHeight(60),
+                                      textStyle: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      _deleteBudgetDialogBuilder(
+                                          context,
+                                          retrievedBudgetList![index]
+                                              .budgetName,
+                                          remainingAmount);
+                                    },
+                                    child: const Text('Delete Budget')),
+                                const SizedBox(
+                                  height: 70.0,
+                                )
+                              ],
+                            ),
+                          ));
+                    }));
+          },
+          child: Column(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 35, 63, 105),
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(15.0))),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20.0, 15.0, 10.0, 20.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset('images/shopping.svg',
+                              height: 50, width: 50, fit: BoxFit.scaleDown),
+                          const SizedBox(
+                            width: 20.0,
+                          ),
+                          Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  retrievedBudgetList![index].budgetName,
+                                  style: const TextStyle(
+                                      fontSize: 17.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Text('${dailyAmt} per day',
+                                    style: const TextStyle(
+                                        letterSpacing: 0.5,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white70)),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 15.0,
+              ),
+              Column(
+                children: [
+                  CircularPercentIndicator(
+                    radius: 55.0,
+                    lineWidth: 13.0,
+                    animation: true,
+                    animationDuration: 3000,
+                    percent: percent,
+                    animateFromLastPercent: true,
+                    center: const Icon(
+                      Icons.shopping_bag_outlined,
+                      size: 40.0,
+                    ),
+                    circularStrokeCap: CircularStrokeCap.round,
+                    progressColor: Colors.blue,
+                    widgetIndicator: const RotatedBox(
+                      quarterTurns: 1,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Text(
+                    '${amtSpent} spent from ${budgetAmt}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18.0,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  Text(
+                    'Start Date : ${DateFormat.yMMMMd().format(start)}',
+                    style: const TextStyle(
+                        letterSpacing: 0.5,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    'End Date : ${DateFormat.yMMMMd().format(end)}',
+                    style: const TextStyle(
+                        letterSpacing: 0.5,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _transactionItemBuilder(BuildContext context, int index) {
     var transactionAmt = NumberFormat.currency(locale: "en_NG", symbol: "₦")
         .format(double.parse(
-        retrievedTransactionsCreditList![index].transactionAmount));
+            retrievedTransactionsCreditList![index].transactionAmount));
 
     String transactionName =
         retrievedTransactionsCreditList![index].transactionTitle;
@@ -141,13 +371,13 @@ class _DashboardPageState extends State<DashboardPage>
         retrievedTransactionsCreditList![index].transactionDate;
 
     if (service.daysBetween(
-        retrievedTransactionsCreditList![index].transactionDate,
-        DateTime.now()) ==
+            retrievedTransactionsCreditList![index].transactionDate,
+            DateTime.now()) ==
         0) {
       formattedTransacDate = 'Today';
     } else if (service.daysBetween(
-        retrievedTransactionsCreditList![index].transactionDate,
-        DateTime.now()) ==
+            retrievedTransactionsCreditList![index].transactionDate,
+            DateTime.now()) ==
         1) {
       formattedTransacDate = 'Yesterday';
     }
@@ -270,10 +500,7 @@ class _DashboardPageState extends State<DashboardPage>
       children: [
         Scaffold(
           body: RefreshIndicator(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .secondary,
+            color: Theme.of(context).colorScheme.secondary,
             onRefresh: () {
               return getAllData();
             },
@@ -290,51 +517,51 @@ class _DashboardPageState extends State<DashboardPage>
                         children: [
                           Padding(
                               padding:
-                              const EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
+                                  const EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
                               child: _imageLoaded
                                   ? InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/userpage');
-                                },
-                                child: CircleAvatar(
-                                  radius: 40.0,
-                                  foregroundColor:
-                                  Color.fromARGB(255, 223, 220, 220),
-                                  child: CachedNetworkImage(
-                                    // imageUrl: user!.photoURL.toString(),
-                                    imageBuilder:
-                                        (context, imageProvider) =>
-                                        Container(
-                                          width: 80.0,
-                                          height: 80.0,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, '/userpage');
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 40.0,
+                                        foregroundColor:
+                                            Color.fromARGB(255, 223, 220, 220),
+                                        child: CachedNetworkImage(
+                                          // imageUrl: user!.photoURL.toString(),
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            width: 80.0,
+                                            height: 80.0,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
+                                            ),
                                           ),
+                                          placeholder: (context, url) =>
+                                              CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
                                         ),
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  ),
-                                ),
-                              )
+                                      ),
+                                    )
                                   : InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/userpage');
-                                },
-                                child: const CircleAvatar(
-                                  radius: 40.0,
-                                  foregroundColor:
-                                  Color.fromARGB(255, 223, 220, 220),
-                                  backgroundImage:
-                                  AssetImage('images/profile.png'),
-                                ),
-                              )),
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, '/userpage');
+                                      },
+                                      child: const CircleAvatar(
+                                        radius: 40.0,
+                                        foregroundColor:
+                                            Color.fromARGB(255, 223, 220, 220),
+                                        backgroundImage:
+                                            AssetImage('images/profile.png'),
+                                      ),
+                                    )),
                           const SizedBox(
                             width: 50.0,
                           ),
@@ -354,7 +581,7 @@ class _DashboardPageState extends State<DashboardPage>
                       ),
                       Padding(
                           padding:
-                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 1.0),
+                              const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 1.0),
                           child: Column(
                             children: [
                               Container(
@@ -391,99 +618,73 @@ class _DashboardPageState extends State<DashboardPage>
                                                 minimumSize: const Size(50, 45),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        15.0)),
+                                                        BorderRadius.circular(
+                                                            15.0)),
                                                 textStyle: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 18,
                                                     letterSpacing: 0.5,
                                                     fontWeight:
-                                                    FontWeight.bold)),
+                                                        FontWeight.bold)),
                                             onPressed: () {
                                               showModalBottomSheet<void>(
                                                   context: context,
                                                   isScrollControlled: true,
                                                   enableDrag: false,
                                                   shape:
-                                                  const RoundedRectangleBorder(
+                                                      const RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.vertical(
+                                                        BorderRadius.vertical(
                                                       top:
-                                                      Radius.circular(35.0),
+                                                          Radius.circular(35.0),
                                                     ),
                                                   ),
                                                   builder: (BuildContext
-                                                  context) =>
+                                                          context) =>
                                                       StatefulBuilder(builder:
                                                           (context,
-                                                          setModalState) {
+                                                              setModalState) {
                                                         return Padding(
-                                                            padding: EdgeInsets
-                                                                .only(
-                                                                bottom: MediaQuery
-                                                                    .of(
-                                                                    context)
+                                                            padding: EdgeInsets.only(
+                                                                bottom: MediaQuery.of(
+                                                                        context)
                                                                     .viewInsets
                                                                     .bottom),
                                                             child: Container(
                                                               padding:
-                                                              const EdgeInsets
-                                                                  .all(
-                                                                  25.0),
+                                                                  const EdgeInsets
+                                                                          .all(
+                                                                      25.0),
                                                               child: Form(
                                                                 // key: _formKey,
                                                                 child: ListView(
                                                                     shrinkWrap:
-                                                                    true,
+                                                                        true,
                                                                     children: [
                                                                       Column(
                                                                         mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .min,
+                                                                            MainAxisSize.min,
                                                                         children: [
                                                                           const Align(
                                                                             alignment:
-                                                                            Alignment
-                                                                                .centerLeft,
+                                                                                Alignment.centerLeft,
                                                                             child:
-                                                                            Text(
+                                                                                Text(
                                                                               'Amount',
-                                                                              style: TextStyle(
-                                                                                  fontFamily: 'OpenSans',
-                                                                                  letterSpacing: 0.2,
-                                                                                  fontSize: 16.0,
-                                                                                  fontWeight: FontWeight
-                                                                                      .w600,
-                                                                                  color: Color
-                                                                                      .fromARGB(
-                                                                                      255,
-                                                                                      67,
-                                                                                      65,
-                                                                                      65)),
+                                                                              style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
                                                                             ),
                                                                           ),
                                                                           SizedBox(
                                                                             height:
-                                                                            10.0,
+                                                                                10.0,
                                                                           ),
                                                                           Theme(
                                                                             data:
-                                                                            Theme
-                                                                                .of(
-                                                                                context)
-                                                                                .copyWith(
-                                                                              colorScheme: ThemeData()
-                                                                                  .colorScheme
-                                                                                  .copyWith(
-                                                                                  primary: Color
-                                                                                      .fromARGB(
-                                                                                      255,
-                                                                                      44,
-                                                                                      79,
-                                                                                      106)),
+                                                                                Theme.of(context).copyWith(
+                                                                              colorScheme: ThemeData().colorScheme.copyWith(primary: Color.fromARGB(255, 44, 79, 106)),
                                                                             ),
                                                                             child:
-                                                                            TextFormField(
+                                                                                TextFormField(
                                                                               // inputFormatters: [
                                                                               //   CurrencyTextInputFormatter(
                                                                               //     locale: 'en_NG',
@@ -497,24 +698,13 @@ class _DashboardPageState extends State<DashboardPage>
                                                                                 border: OutlineInputBorder(),
                                                                                 hintText: '12,000.00',
                                                                               ),
-                                                                              keyboardType: TextInputType
-                                                                                  .number,
-                                                                              autovalidateMode: AutovalidateMode
-                                                                                  .onUserInteraction,
-                                                                              onFieldSubmitted: (
-                                                                                  value) {},
-                                                                              validator: (
-                                                                                  value) {
-                                                                                if (value!
-                                                                                    .trim()
-                                                                                    .isEmpty) {
+                                                                              keyboardType: TextInputType.number,
+                                                                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                              onFieldSubmitted: (value) {},
+                                                                              validator: (value) {
+                                                                                if (value!.trim().isEmpty) {
                                                                                   return 'Amount is required';
-                                                                                } else
-                                                                                if (value
-                                                                                    .replaceAll(
-                                                                                    '₦',
-                                                                                    '') ==
-                                                                                    '0') {
+                                                                                } else if (value.replaceAll('₦', '') == '0') {
                                                                                   return 'Amount can not be 0';
                                                                                 }
                                                                               },
@@ -522,85 +712,46 @@ class _DashboardPageState extends State<DashboardPage>
                                                                           ),
                                                                           const SizedBox(
                                                                             height:
-                                                                            40.0,
+                                                                                40.0,
                                                                           ),
                                                                           const Align(
                                                                             alignment:
-                                                                            Alignment
-                                                                                .centerLeft,
+                                                                                Alignment.centerLeft,
                                                                             child:
-                                                                            Text(
+                                                                                Text(
                                                                               'Description',
-                                                                              style: TextStyle(
-                                                                                  fontFamily: 'OpenSans',
-                                                                                  letterSpacing: 0.2,
-                                                                                  fontSize: 16.0,
-                                                                                  fontWeight: FontWeight
-                                                                                      .w600,
-                                                                                  color: Color
-                                                                                      .fromARGB(
-                                                                                      255,
-                                                                                      67,
-                                                                                      65,
-                                                                                      65)),
+                                                                              style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
                                                                             ),
                                                                           ),
                                                                           SizedBox(
                                                                             height:
-                                                                            10.0,
+                                                                                10.0,
                                                                           ),
                                                                           Theme(
                                                                             data:
-                                                                            Theme
-                                                                                .of(
-                                                                                context)
-                                                                                .copyWith(
-                                                                              colorScheme: ThemeData()
-                                                                                  .colorScheme
-                                                                                  .copyWith(
-                                                                                  primary: Color
-                                                                                      .fromARGB(
-                                                                                      255,
-                                                                                      44,
-                                                                                      79,
-                                                                                      106)),
+                                                                                Theme.of(context).copyWith(
+                                                                              colorScheme: ThemeData().colorScheme.copyWith(primary: Color.fromARGB(255, 44, 79, 106)),
                                                                             ),
                                                                             child:
-                                                                            TextFormField(
+                                                                                TextFormField(
                                                                               // controller: _amountDescriptionController,
                                                                               maxLength: 15,
-                                                                              inputFormatters: <
-                                                                                  TextInputFormatter>[
-                                                                                FilteringTextInputFormatter
-                                                                                    .allow(
-                                                                                    RegExp(
-                                                                                        "[a-zA-Z ]")),
-                                                                                LengthLimitingTextInputFormatter(
-                                                                                    100),
+                                                                              inputFormatters: <TextInputFormatter>[
+                                                                                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                                                                                LengthLimitingTextInputFormatter(100),
                                                                               ],
                                                                               decoration: const InputDecoration(
                                                                                 border: OutlineInputBorder(),
                                                                                 hintText: 'Bonus Amount',
                                                                               ),
-                                                                              keyboardType: TextInputType
-                                                                                  .text,
-                                                                              textCapitalization: TextCapitalization
-                                                                                  .sentences,
-                                                                              autovalidateMode: AutovalidateMode
-                                                                                  .onUserInteraction,
-                                                                              onFieldSubmitted: (
-                                                                                  value) {},
-                                                                              validator: (
-                                                                                  value) {
-                                                                                if (value!
-                                                                                    .trim()
-                                                                                    .isEmpty) {
+                                                                              keyboardType: TextInputType.text,
+                                                                              textCapitalization: TextCapitalization.sentences,
+                                                                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                              onFieldSubmitted: (value) {},
+                                                                              validator: (value) {
+                                                                                if (value!.trim().isEmpty) {
                                                                                   return 'Description is required';
-                                                                                } else
-                                                                                if (value
-                                                                                    .startsWith(
-                                                                                    RegExp(
-                                                                                        r'[0-9]'))) {
+                                                                                } else if (value.startsWith(RegExp(r'[0-9]'))) {
                                                                                   return 'Description is not valid';
                                                                                 }
                                                                               },
@@ -608,31 +759,16 @@ class _DashboardPageState extends State<DashboardPage>
                                                                           ),
                                                                           SizedBox(
                                                                             height:
-                                                                            40.0,
+                                                                                40.0,
                                                                           ),
                                                                           ElevatedButton(
-                                                                              style: ElevatedButton
-                                                                                  .styleFrom(
+                                                                              style: ElevatedButton.styleFrom(
                                                                                   shape: RoundedRectangleBorder(
-                                                                                    borderRadius: BorderRadius
-                                                                                        .circular(
-                                                                                        10),
+                                                                                    borderRadius: BorderRadius.circular(10),
                                                                                   ),
-                                                                                  primary: Color
-                                                                                      .fromARGB(
-                                                                                      255,
-                                                                                      4,
-                                                                                      44,
-                                                                                      76),
-                                                                                  minimumSize: const Size
-                                                                                      .fromHeight(
-                                                                                      60),
-                                                                                  textStyle: const TextStyle(
-                                                                                      color: Colors
-                                                                                          .white,
-                                                                                      fontSize: 20,
-                                                                                      fontWeight: FontWeight
-                                                                                          .bold)),
+                                                                                  primary: Color.fromARGB(255, 4, 44, 76),
+                                                                                  minimumSize: const Size.fromHeight(60),
+                                                                                  textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                                                                               onPressed: () {},
                                                                               // !_loading
                                                                               //     ? () {
@@ -651,11 +787,10 @@ class _DashboardPageState extends State<DashboardPage>
                                                                               //         }
                                                                               //       }
                                                                               //     : null,
-                                                                              child: Text(
-                                                                                  'Add Money')),
+                                                                              child: Text('Add Money')),
                                                                           SizedBox(
                                                                             height:
-                                                                            30.0,
+                                                                                30.0,
                                                                           )
                                                                         ],
                                                                       ),
@@ -726,7 +861,7 @@ class _DashboardPageState extends State<DashboardPage>
                                     child: TextButton(
                                       style: TextButton.styleFrom(
                                         primary:
-                                        const Color.fromARGB(255, 1, 8, 14),
+                                            const Color.fromARGB(255, 1, 8, 14),
                                         textStyle: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
@@ -749,64 +884,61 @@ class _DashboardPageState extends State<DashboardPage>
                                   )),
                               Padding(
                                 padding:
-                                const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+                                    const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
                                 child: Container(
                                   margin:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   height: 400.0,
                                   child: FutureBuilder(
-                                    // future: budgetsList,
+                                      // future: budgetsList,
                                       builder: (BuildContext context,
                                           AsyncSnapshot<List<Budgets>>
-                                          snapshot) {
-                                        if (snapshot.connectionState ==
+                                              snapshot) {
+                                    if (snapshot.connectionState ==
                                             ConnectionState.done &&
-                                            retrievedBudgetList?.isEmpty ==
-                                                null) {
-                                          const Center(
-                                            child: Text(
-                                              'No Budgets Yet',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 20.0),
-                                            ),
-                                          );
-                                        }
-                                        if (retrievedBudgetList?.isEmpty ??
-                                            true) {
-                                          return const Center(
-                                            child: Text(
-                                              'No Budgets Yet',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 20.0),
-                                            ),
-                                          );
-                                        }
-                                        if (snapshot.hasData &&
-                                            snapshot.data != null) {
-                                          return Center(
-                                            child: ListView.separated(
-                                              shrinkWrap: true,
-                                              separatorBuilder:
-                                                  (BuildContext context,
+                                        retrievedBudgetList?.isEmpty == null) {
+                                      const Center(
+                                        child: Text(
+                                          'No Budgets Yet',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 20.0),
+                                        ),
+                                      );
+                                    }
+                                    if (retrievedBudgetList?.isEmpty ?? true) {
+                                      return const Center(
+                                        child: Text(
+                                          'No Budgets Yet',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 20.0),
+                                        ),
+                                      );
+                                    }
+                                    if (snapshot.hasData &&
+                                        snapshot.data != null) {
+                                      return Center(
+                                        child: ListView.separated(
+                                          shrinkWrap: true,
+                                          separatorBuilder:
+                                              (BuildContext context,
                                                   int index) {
-                                                return const SizedBox(
-                                                    height: 15);
-                                              },
-                                              primary: false,
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount:
+                                            return const SizedBox(height: 15);
+                                          },
+                                          primary: false,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount:
                                               retrievedBudgetList?.length ?? 0,
-                                              itemBuilder: _itemBuilder,
-                                            ),
-                                          );
-                                        } else {
-                                          return const Center(
-                                            child: LoadingIndicator(),
-                                          );
-                                        }
-                                      }),
+                                          itemBuilder: _itemBuilder,
+                                        ),
+                                      );
+                                    } else {
+                                      return const Center(
+                                        child: LoadingIndicator(),
+                                      );
+                                    }
+                                  }),
                                 ),
                               )
                             ]),
@@ -850,59 +982,58 @@ class _DashboardPageState extends State<DashboardPage>
                                     padding: const EdgeInsets.fromLTRB(
                                         15.0, 0, 15.0, 0),
                                     child: FutureBuilder(
-                                      // future: transactionsCreditList,
+                                        // future: transactionsCreditList,
                                         builder: (BuildContext context,
                                             AsyncSnapshot<List<Transactions>>
-                                            snapshot) {
-                                          if (snapshot.connectionState ==
+                                                snapshot) {
+                                      if (snapshot.connectionState ==
                                               ConnectionState.done &&
-                                              retrievedTransactionsCreditList
+                                          retrievedTransactionsCreditList
                                                   ?.isEmpty ==
-                                                  null) {
-                                            const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
-                                          if (retrievedTransactionsCreditList
+                                              null) {
+                                        const Center(
+                                          child: Text(
+                                            'No Transactions Yet',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 20.0),
+                                          ),
+                                        );
+                                      }
+                                      if (retrievedTransactionsCreditList
                                               ?.isEmpty ??
-                                              true) {
-                                            return const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
-                                          if (snapshot.hasData &&
-                                              snapshot.data != null) {
-                                            return ListView.separated(
-                                              shrinkWrap: true,
-                                              separatorBuilder:
-                                                  (BuildContext context,
+                                          true) {
+                                        return const Center(
+                                          child: Text(
+                                            'No Transactions Yet',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 20.0),
+                                          ),
+                                        );
+                                      }
+                                      if (snapshot.hasData &&
+                                          snapshot.data != null) {
+                                        return ListView.separated(
+                                          shrinkWrap: true,
+                                          separatorBuilder:
+                                              (BuildContext context,
                                                   int index) {
-                                                return const SizedBox(
-                                                    height: 15);
-                                              },
-                                              primary: false,
-                                              scrollDirection: Axis.vertical,
-                                              itemCount:
+                                            return const SizedBox(height: 15);
+                                          },
+                                          primary: false,
+                                          scrollDirection: Axis.vertical,
+                                          itemCount:
                                               retrievedTransactionsCreditList
-                                                  ?.length ??
+                                                      ?.length ??
                                                   0,
-                                              itemBuilder: _transactionItemBuilder,
-                                            );
-                                          } else {
-                                            return const Center(
-                                                child: LoadingIndicator());
-                                          }
-                                        }),
+                                          itemBuilder: _transactionItemBuilder,
+                                        );
+                                      } else {
+                                        return const Center(
+                                            child: LoadingIndicator());
+                                      }
+                                    }),
                                   ),
                                 ),
                               ],
@@ -917,22 +1048,16 @@ class _DashboardPageState extends State<DashboardPage>
             ),
           ),
         ),
-        if (_loading)
-          const Center(child: LoadingIndicator())
+        if (_loading) const Center(child: LoadingIndicator())
       ],
     );
   }
 
-
-
-
   CachedNetworkImage(
       {required Container Function(dynamic context, dynamic imageProvider)
-      imageBuilder,
-        required CircularProgressIndicator Function(dynamic context, dynamic url)
-        placeholder,
-        required Icon Function(dynamic context, dynamic url, dynamic error)
-        errorWidget}) {}
+          imageBuilder,
+      required CircularProgressIndicator Function(dynamic context, dynamic url)
+          placeholder,
+      required Icon Function(dynamic context, dynamic url, dynamic error)
+          errorWidget}) {}
 }
-
-
