@@ -35,6 +35,7 @@ class AppTheme {
 
   /// Light theme and its settings.
   ThemeData get light => ThemeData(
+    primaryColor: AppColors.secondary,
     brightness: Brightness.light,
     colorScheme: lightBase.colorScheme.copyWith(primary: Colors.white, secondary: AppColors.secondary),
     visualDensity: visualDensity,
@@ -101,6 +102,7 @@ class AppTheme {
   /// Dark theme and its settings.
   ThemeData get dark => ThemeData(
     brightness: Brightness.dark,
+    primaryColor: Colors.white,
     colorScheme: darkBase.colorScheme.copyWith(primary: Colors.black, secondary: Colors.white),
     visualDensity: visualDensity,
     // textTheme:

@@ -12,9 +12,9 @@ import 'package:thrifty/data/data.dart';
 import 'package:thrifty/pages/pages.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
+import '../theme.dart';
 import '../widgets/widgets.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 
 
@@ -30,6 +30,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
   late double percent;
   bool _loading = false;
   ScrollController? _controller;
+  // ignore: prefer_typing_uninitialized_variables
   var userEmail;
   String totalAmt = '₦ 0.0',
       budgetAmt = '₦ 0.0',
@@ -47,7 +48,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
   Future<List<Transactions>>? transactionsCreditList;
   List<Transactions>? retrievedTransactionsCreditList;
   bool _imageLoaded = false;
-  var img = null;
+  // ignore: prefer_typing_uninitialized_variables
+  var img;
 
   @override
   void initState() {
@@ -91,582 +93,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final User? user = auth.currentUser;
 
-    if (user?.uid.isEmpty == null) {
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/', (Route<dynamic> route) => false);
-      });
-    } else {
-      print("user Id ${user!.uid}");
-    }
-
-    return Stack(
-      children: [
-        Scaffold(
-          body: RefreshIndicator(
-            onRefresh: () {
-              return getAllData();
-            },
-            child: SafeArea(
-              child: ListView(
-                controller: _controller,
-                children: [
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      Row(
-                        children: [
-                          Padding(
-                              padding: EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
-                              child: _imageLoaded
-                                  ? InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/userpage');
-                                },
-                                child: CircleAvatar(
-                                  radius: 40.0,
-                                  foregroundColor:
-                                  Color.fromARGB(255, 223, 220, 220),
-                                  child: CachedNetworkImage(
-                                    imageUrl: user!.photoURL.toString(),
-                                    imageBuilder:
-                                        (context, imageProvider) =>
-                                        Container(
-                                          width: 80.0,
-                                          height: 80.0,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                          ),
-                                        ),
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  ),
-                                ),
-                              )
-                                  : InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/userpage');
-                                },
-                                child: const CircleAvatar(
-                                  radius: 40.0,
-                                  foregroundColor:
-                                  Color.fromARGB(255, 223, 220, 220),
-                                  backgroundImage:
-                                  AssetImage('images/profile.png'),
-                                ),
-                              )),
-                          const SizedBox(
-                            width: 50.0,
-                          ),
-                          const Text(
-                            'DashboardPage',
-                            style: TextStyle(
-                              letterSpacing: 0.5,
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.w900,
-                              color: Color.fromARGB(255, 35, 63, 105),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 8.0,
-                      ),
-                      Padding(
-                          padding:
-                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 1.0),
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                    color: Color.fromARGB(255, 35, 63, 105),
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(30.0))),
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      25.0, 15.0, 25.0, 15.0),
-                                  child: Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 45.0,
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(totalAmt,
-                                            style: const TextStyle(
-                                                letterSpacing: 0.5,
-                                                fontSize: 27.0,
-                                                fontWeight: FontWeight.w800,
-                                                color: Colors.white)),
-                                      ),
-                                      const SizedBox(
-                                        height: 45.0,
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Colors.blue,
-                                                minimumSize: const Size(50, 45),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        15.0)),
-                                                textStyle: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    letterSpacing: 0.5,
-                                                    fontWeight:
-                                                    FontWeight.bold)),
-                                            onPressed: () {
-                                              showModalBottomSheet<void>(
-                                                  context: context,
-                                                  isScrollControlled: true,
-                                                  enableDrag: false,
-                                                  shape:
-                                                  const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.vertical(
-                                                      top:
-                                                      Radius.circular(35.0),
-                                                    ),
-                                                  ),
-                                                  builder: (BuildContext
-                                                  context) =>
-                                                      StatefulBuilder(builder:
-                                                          (context,
-                                                          setModalState) {
-                                                        return Padding(
-                                                            padding: EdgeInsets.only(
-                                                                bottom: MediaQuery.of(
-                                                                    context)
-                                                                    .viewInsets
-                                                                    .bottom),
-                                                            child: Container(
-                                                              padding:
-                                                              const EdgeInsets
-                                                                  .all(
-                                                                  25.0),
-                                                              child: Form(
-                                                                key: _formKey,
-                                                                child: ListView(
-                                                                    shrinkWrap:
-                                                                    true,
-                                                                    children: [
-                                                                      Column(
-                                                                        mainAxisSize:
-                                                                        MainAxisSize.min,
-                                                                        children: [
-                                                                          const Align(
-                                                                            alignment:
-                                                                            Alignment.centerLeft,
-                                                                            child:
-                                                                            Text(
-                                                                              'Amount',
-                                                                              style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                            10.0,
-                                                                          ),
-                                                                          Theme(
-                                                                            data:
-                                                                            Theme.of(context).copyWith(
-                                                                              colorScheme: ThemeData().colorScheme.copyWith(primary: Color.fromARGB(255, 44, 79, 106)),
-                                                                            ),
-                                                                            child:
-                                                                            TextFormField(
-                                                                              inputFormatters: [
-                                                                                CurrencyTextInputFormatter(
-                                                                                  locale: 'en_NG',
-                                                                                  decimalDigits: 0,
-                                                                                  symbol: '₦',
-                                                                                ),
-                                                                                LengthLimitingTextInputFormatter(21),
-                                                                              ],
-                                                                              controller: _amountController,
-                                                                              decoration: const InputDecoration(
-                                                                                border: OutlineInputBorder(),
-                                                                                hintText: '12,000.00',
-                                                                              ),
-                                                                              keyboardType: TextInputType.number,
-                                                                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                              onFieldSubmitted: (value) {},
-                                                                              validator: (value) {
-                                                                                if (value!.trim().isEmpty) {
-                                                                                  return 'Amount is required';
-                                                                                } else if (value.replaceAll('₦', '') == '0') {
-                                                                                  return 'Amount can not be 0';
-                                                                                }
-                                                                              },
-                                                                            ),
-                                                                          ),
-                                                                          const SizedBox(
-                                                                            height:
-                                                                            40.0,
-                                                                          ),
-                                                                          const Align(
-                                                                            alignment:
-                                                                            Alignment.centerLeft,
-                                                                            child:
-                                                                            Text(
-                                                                              'Description',
-                                                                              style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                            10.0,
-                                                                          ),
-                                                                          Theme(
-                                                                            data:
-                                                                            Theme.of(context).copyWith(
-                                                                              colorScheme: ThemeData().colorScheme.copyWith(primary: Color.fromARGB(255, 44, 79, 106)),
-                                                                            ),
-                                                                            child:
-                                                                            TextFormField(
-                                                                              controller: _amountDescriptionController,
-                                                                              maxLength: 15,
-                                                                              inputFormatters: <TextInputFormatter>[
-                                                                                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
-                                                                                LengthLimitingTextInputFormatter(100),
-                                                                              ],
-                                                                              decoration: const InputDecoration(
-                                                                                border: OutlineInputBorder(),
-                                                                                hintText: 'Bonus Amount',
-                                                                              ),
-                                                                              keyboardType: TextInputType.text,
-                                                                              textCapitalization: TextCapitalization.sentences,
-                                                                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                              onFieldSubmitted: (value) {},
-                                                                              validator: (value) {
-                                                                                if (value!.trim().isEmpty) {
-                                                                                  return 'Description is required';
-                                                                                } else if (value.startsWith(RegExp(r'[0-9]'))) {
-                                                                                  return 'Description is not valid';
-                                                                                }
-                                                                              },
-                                                                            ),
-                                                                          ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                            40.0,
-                                                                          ),
-                                                                          ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(
-                                                                                  shape: RoundedRectangleBorder(
-                                                                                    borderRadius: BorderRadius.circular(10),
-                                                                                  ),
-                                                                                  primary: Color.fromARGB(255, 4, 44, 76),
-                                                                                  minimumSize: const Size.fromHeight(60),
-                                                                                  textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                                                                              onPressed: !_loading
-                                                                                  ? () {
-                                                                                if (_formKey.currentState!.validate()) {
-                                                                                  setState(() {
-                                                                                    _loading = true;
-                                                                                  });
-                                                                                  setModalState(() {
-                                                                                    _loading = true;
-                                                                                  });
-
-                                                                                  String amount = _amountController.text.toString().replaceAll(',', '').replaceAll('₦', '').trim();
-                                                                                  String description = _amountDescriptionController.text.toString().trim();
-
-                                                                                  addAmount(double.parse(amount), description, setModalState);
-                                                                                }
-                                                                              }
-                                                                                  : null,
-                                                                              child: Text('Add Money')),
-                                                                          SizedBox(
-                                                                            height:
-                                                                            30.0,
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    ]),
-                                                              ),
-                                                            ));
-                                                      }));
-                                            },
-                                            child: const Text('+ Add Money')),
-                                      ),
-                                      const SizedBox(
-                                        height: 30.0,
-                                      ),
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                            '${DateFormat('yMMMMd').format(DateTime.now())}',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                letterSpacing: 0.5,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.white)),
-                                      ),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 30.0,
-                              ),
-                            ],
-                          )),
-                      SizedBox(
-                        width: 350.0,
-                        child: TabBar(
-                          controller: tabController,
-                          tabs: const [
-                            Tab(text: 'Expenses'),
-                            Tab(
-                              text: 'Income',
-                            )
-                          ],
-                          indicator: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: const Color.fromARGB(255, 35, 63, 105)),
-                          unselectedLabelColor: Colors.grey[700],
-                          labelColor: Colors.white,
-                          labelStyle: const TextStyle(
-                              fontSize: 15.0, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 500,
-                        height: 500,
-                        child: TabBarView(
-                          controller: tabController,
-                          children: [
-                            Column(children: [
-                              Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                      30.0, 0.0, 30.0, 0.0),
-                                  child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: TextButton(
-                                      style: TextButton.styleFrom(
-                                        primary:
-                                        const Color.fromARGB(255, 1, 8, 14),
-                                        textStyle: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                              const AddBudget()),
-                                        ).then((_) {
-                                          setState(() {
-                                            getAllData();
-                                          });
-                                        });
-                                      },
-                                      child: const Text('+ Add Budget'),
-                                    ),
-                                  )),
-                              Padding(
-                                padding:
-                                const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-                                child: Container(
-                                  margin:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                                  height: 400.0,
-                                  child: FutureBuilder(
-                                      future: budgetsList,
-                                      builder: (BuildContext context,
-                                          AsyncSnapshot<List<Budgets>>
-                                          snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.done &&
-                                            retrievedBudgetList?.isEmpty ==
-                                                null) {
-                                          const Center(
-                                            child: Text(
-                                              'No Budgets Yet',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 20.0),
-                                            ),
-                                          );
-                                        }
-                                        if (retrievedBudgetList?.isEmpty ??
-                                            true) {
-                                          return const Center(
-                                            child: Text(
-                                              'No Budgets Yet',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 20.0),
-                                            ),
-                                          );
-                                        }
-                                        if (snapshot.hasData &&
-                                            snapshot.data != null) {
-                                          return Center(
-                                            child: ListView.separated(
-                                              shrinkWrap: true,
-                                              separatorBuilder:
-                                                  (BuildContext context,
-                                                  int index) {
-                                                return const SizedBox(
-                                                    height: 15);
-                                              },
-                                              primary: false,
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount:
-                                              retrievedBudgetList?.length ??
-                                                  0,
-                                              itemBuilder: _itemBuilder,
-                                            ),
-                                          );
-                                        } else {
-                                          return Center(
-                                            child: SpinKitSquareCircle(
-                                              color: Colors.blue[500],
-                                              size: 60.0,
-                                            ),
-                                          );
-                                        }
-                                      }),
-                                ),
-                              )
-                            ]),
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 5.0,
-                                ),
-                                Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        30.0, 0.0, 30.0, 0.0),
-                                    child: Align(
-                                      alignment: Alignment.topRight,
-                                      child: TextButton(
-                                        style: TextButton.styleFrom(
-                                          primary: const Color.fromARGB(
-                                              255, 1, 8, 14),
-                                          textStyle: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                const FinancesPage()),
-                                          ).then((_) {
-                                            setState(() {
-                                              getAllData();
-                                            });
-                                          });
-                                        },
-                                        child: const Text('View All'),
-                                      ),
-                                    )),
-                                Container(
-                                  height: 350.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        15.0, 0, 15.0, 0),
-                                    child: FutureBuilder(
-                                        future: transactionsCreditList,
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<List<Transactions>>
-                                            snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.done &&
-                                              retrievedTransactionsCreditList
-                                                  ?.isEmpty ==
-                                                  null) {
-                                            const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
-                                          if (retrievedTransactionsCreditList
-                                              ?.isEmpty ??
-                                              true) {
-                                            return const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
-                                          if (snapshot.hasData &&
-                                              snapshot.data != null) {
-                                            return ListView.separated(
-                                              shrinkWrap: true,
-                                              separatorBuilder:
-                                                  (BuildContext context,
-                                                  int index) {
-                                                return const SizedBox(
-                                                    height: 15);
-                                              },
-                                              primary: false,
-                                              scrollDirection: Axis.vertical,
-                                              itemCount:
-                                              retrievedTransactionsCreditList
-                                                  ?.length ??
-                                                  0,
-                                              itemBuilder:
-                                              _transactionItemBuilder,
-                                            );
-                                          } else {
-                                            return Center(
-                                              child: SpinKitSquareCircle(
-                                                color: Colors.blue[500],
-                                                size: 60.0,
-                                              ),
-                                            );
-                                          }
-                                        }),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        if (_loading) const Center(child: LoadingIndicator())
-      ],
-    );
-  }
 
   Widget _itemBuilder(BuildContext context, int index) {
     DateTime start = DateTime.parse(retrievedBudgetList![index].startDate);
@@ -735,7 +162,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 40.0,
                                   ),
                                   ElevatedButton(
@@ -745,7 +172,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                             BorderRadius.circular(30),
                                           ),
                                           primary:
-                                          Color.fromARGB(255, 35, 63, 105),
+                                          const Color.fromARGB(255, 35, 63, 105),
                                           minimumSize:
                                           const Size.fromHeight(60),
                                           textStyle: const TextStyle(
@@ -768,8 +195,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                           });
                                         });
                                       },
-                                      child: Text('Edit Budget')),
-                                  SizedBox(
+                                      child: const Text('Edit Budget')),
+                                  const SizedBox(
                                     height: 50.0,
                                   ),
                                   ElevatedButton(
@@ -793,8 +220,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                                 .budgetName,
                                             remainingAmount);
                                       },
-                                      child: Text('Delete Budget')),
-                                  SizedBox(
+                                      child: const Text('Delete Budget')),
+                                  const SizedBox(
                                     height: 70.0,
                                   )
                                 ],
@@ -992,7 +419,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
             height: 65.0,
             decoration: BoxDecoration(
                 border: Border.all(
-                  color: Color.fromARGB(255, 223, 220, 220),
+                  color: const Color.fromARGB(255, 223, 220, 220),
                 ),
                 borderRadius: BorderRadius.circular(15.0)),
             child: Padding(
@@ -1003,7 +430,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                     minRadius: 25.0,
                     child: Text(imageText),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20.0,
                   ),
                   Expanded(
@@ -1016,10 +443,10 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                           children: [
                             Text(
                               transactionName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 8.0,
                             ),
                             Align(
@@ -1044,7 +471,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                   color: Colors.green[900],
                                   fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 8.0,
                             ),
                             Text(
@@ -1091,7 +518,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     } else {
       img = Image.network(user.photoURL.toString());
 
-      img.image.resolve(ImageConfiguration()).addListener(
+      img.image.resolve(const ImageConfiguration()).addListener(
           ImageStreamListener((ImageInfo image, bool synchronousCall) {
             if (mounted) {
               setState(() => _imageLoaded = true);
@@ -1248,14 +675,14 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
           return StatefulBuilder(builder: (context, setDialogState) {
             return Dialog(
               elevation: 0,
-              backgroundColor: Color(0xffffffff),
+              backgroundColor: const Color(0xffffffff),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20.0,
                   ),
                   const Padding(
@@ -1269,26 +696,26 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20.0,
                   ),
                   Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         width: 60.0,
                       ),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 5.0,
-                              primary: Color.fromARGB(255, 183, 181, 181),
+                              primary: const Color.fromARGB(255, 183, 181, 181),
                               minimumSize: const Size(100, 50),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0))),
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('No', style: TextStyle(fontSize: 17.0))),
-                      SizedBox(
+                          child: const Text('No', style: TextStyle(fontSize: 17.0))),
+                      const SizedBox(
                         width: 20.0,
                       ),
                       ElevatedButton(
@@ -1309,13 +736,13 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                 budgetName, remainingAmount, 'delete');
                           }
                               : null,
-                          child: Text(
+                          child: const Text(
                             'Yes',
                             style: TextStyle(fontSize: 17.0),
                           )),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 40.0,
                   )
                 ],
@@ -1323,6 +750,561 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
             );
           });
         });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final User? user = auth.currentUser;
+
+    if (user?.uid.isEmpty == null) {
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/', (Route<dynamic> route) => false);
+      });
+    } else {
+      print("user Id ${user!.uid}");
+    }
+
+    return Stack(
+      children: [
+        Scaffold(
+          body: RefreshIndicator(
+            onRefresh: () {
+              return getAllData();
+            },
+            child: SafeArea(
+              child: ListView(
+                controller: _controller,
+                children: [
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 15.0,
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
+                              child: _imageLoaded
+                                  ? InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, '/userpage');
+                                },
+                                child: CircleAvatar(
+                                  radius: 30.0,
+                                  foregroundColor:
+                                  const Color.fromARGB(255, 223, 220, 220),
+                                  child: CachedNetworkImage(
+                                    imageUrl: user!.photoURL.toString(),
+                                    imageBuilder:
+                                        (context, imageProvider) =>
+                                        Container(
+                                          width: 80.0,
+                                          height: 80.0,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
+                                          ),
+                                        ),
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                              )
+                                  : InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, '/userpage');
+                                },
+                                child: CircleAvatar(
+                                  radius: 30.0,
+                                  // foregroundColor: Colors.purple,
+                                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                                  backgroundImage:
+                                  const AssetImage('assets/profile.png'),
+                                ),
+                              )),
+                          const SizedBox(
+                            width: 50.0,
+                          ),
+                          const Text(
+                            'DashboardPage',
+                            style: TextStyle(
+                              letterSpacing: 0.5,
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.w900,
+                              color: Color.fromARGB(255, 35, 63, 105),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8.0,
+                      ),
+                      Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 1.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: const BoxDecoration(
+                                    color: AppColors.secondary,
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(30.0))),
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      25.0, 15.0, 25.0, 15.0),
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(
+                                        height: 45.0,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(totalAmt,
+                                            style: const TextStyle(
+                                                letterSpacing: 0.5,
+                                                fontSize: 27.0,
+                                                fontWeight: FontWeight.w800,
+                                                color: Colors.white)),
+                                      ),
+                                      const SizedBox(
+                                        height: 45.0,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary: Colors.blue,
+                                                minimumSize: const Size(50, 45),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        15.0)),
+                                                textStyle: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    letterSpacing: 0.5,
+                                                    fontWeight:
+                                                    FontWeight.bold)),
+                                            onPressed: () {
+                                              showModalBottomSheet<void>(
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  enableDrag: false,
+                                                  shape:
+                                                  const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.vertical(
+                                                      top:
+                                                      Radius.circular(35.0),
+                                                    ),
+                                                  ),
+                                                  builder: (BuildContext
+                                                  context) =>
+                                                      StatefulBuilder(builder:
+                                                          (context,
+                                                          setModalState) {
+                                                        return Padding(
+                                                            padding: EdgeInsets.only(
+                                                                bottom: MediaQuery.of(
+                                                                    context)
+                                                                    .viewInsets
+                                                                    .bottom),
+                                                            child: Container(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .all(
+                                                                  25.0),
+                                                              child: Form(
+                                                                key: _formKey,
+                                                                child: ListView(
+                                                                    shrinkWrap:
+                                                                    true,
+                                                                    children: [
+                                                                      Column(
+                                                                        mainAxisSize:
+                                                                        MainAxisSize.min,
+                                                                        children: [
+                                                                          const Align(
+                                                                            alignment:
+                                                                            Alignment.centerLeft,
+                                                                            child:
+                                                                            Text(
+                                                                              'Amount',
+                                                                              style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            height:
+                                                                            10.0,
+                                                                          ),
+                                                                          TextFormField(
+                                                                            inputFormatters: [
+                                                                              CurrencyTextInputFormatter(
+                                                                                locale: 'en_NG',
+                                                                                decimalDigits: 0,
+                                                                                symbol: '₦',
+                                                                              ),
+                                                                              LengthLimitingTextInputFormatter(21),
+                                                                            ],
+                                                                            controller: _amountController,
+                                                                            decoration: const InputDecoration(
+                                                                              border: OutlineInputBorder(),
+                                                                              hintText: '12,000.00',
+                                                                            ),
+                                                                            keyboardType: TextInputType.number,
+                                                                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                            onFieldSubmitted: (value) {},
+                                                                            validator: (value) {
+                                                                              if (value!.trim().isEmpty) {
+                                                                                return 'Amount is required';
+                                                                              } else if (value.replaceAll('₦', '') == '0') {
+                                                                                return 'Amount can not be 0';
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            height:
+                                                                            40.0,
+                                                                          ),
+                                                                          const Align(
+                                                                            alignment:
+                                                                            Alignment.centerLeft,
+                                                                            child:
+                                                                            Text(
+                                                                              'Description',
+                                                                              style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            height:
+                                                                            10.0,
+                                                                          ),
+                                                                          TextFormField(
+                                                                            controller: _amountDescriptionController,
+                                                                            maxLength: 15,
+                                                                            inputFormatters: <TextInputFormatter>[
+                                                                              FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
+                                                                              LengthLimitingTextInputFormatter(100),
+                                                                            ],
+                                                                            decoration: const InputDecoration(
+                                                                              border: OutlineInputBorder(),
+                                                                              hintText: 'Bonus Amount',
+                                                                            ),
+                                                                            keyboardType: TextInputType.text,
+                                                                            textCapitalization: TextCapitalization.sentences,
+                                                                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                                            onFieldSubmitted: (value) {},
+                                                                            validator: (value) {
+                                                                              if (value!.trim().isEmpty) {
+                                                                                return 'Description is required';
+                                                                              } else if (value.startsWith(RegExp(r'[0-9]'))) {
+                                                                                return 'Description is not valid';
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                          const SizedBox(
+                                                                            height:
+                                                                            40.0,
+                                                                          ),
+                                                                          ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                  shape: RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                  ),
+                                                                                  primary: const Color.fromARGB(255, 4, 44, 76),
+                                                                                  minimumSize: const Size.fromHeight(60),
+                                                                                  textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                                                                              onPressed: !_loading
+                                                                                  ? () {
+                                                                                if (_formKey.currentState!.validate()) {
+                                                                                  setState(() {
+                                                                                    _loading = true;
+                                                                                  });
+                                                                                  setModalState(() {
+                                                                                    _loading = true;
+                                                                                  });
+
+                                                                                  String amount = _amountController.text.toString().replaceAll(',', '').replaceAll('₦', '').trim();
+                                                                                  String description = _amountDescriptionController.text.toString().trim();
+
+                                                                                  addAmount(double.parse(amount), description, setModalState);
+                                                                                }
+                                                                              }
+                                                                                  : null,
+                                                                              child: const Text('Add Money')),
+                                                                          const SizedBox(
+                                                                            height:
+                                                                            30.0,
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ]),
+                                                              ),
+                                                            ));
+                                                      }));
+                                            },
+                                            child: const Text('+ Add Money')),
+                                      ),
+                                      const SizedBox(
+                                        height: 30.0,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                            '${DateFormat('yMMMMd').format(DateTime.now())}',
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                letterSpacing: 0.5,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white)),
+                                      ),
+                                      const SizedBox(
+                                        height: 5.0,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 30.0,
+                              ),
+                            ],
+                          )),
+                      SizedBox(
+                        width: 350.0,
+                        child: TabBar(
+                          controller: tabController,
+                          tabs: const [
+                            Tab(text: 'Expenses'),
+                            Tab(
+                              text: 'Income',
+                            )
+                          ],
+                          indicator: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: const Color.fromARGB(255, 35, 63, 105)),
+                          unselectedLabelColor: Colors.grey[700],
+                          labelColor: Colors.white,
+                          labelStyle: const TextStyle(
+                              fontSize: 15.0, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 500,
+                        height: 500,
+                        child: TabBarView(
+                          controller: tabController,
+                          children: [
+                            Column(children: [
+                              Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      30.0, 0.0, 30.0, 0.0),
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        primary:
+                                        const Color.fromARGB(255, 1, 8, 14),
+                                        textStyle: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                              const AddBudget()),
+                                        ).then((_) {
+                                          setState(() {
+                                            getAllData();
+                                          });
+                                        });
+                                      },
+                                      child: const Text('+ Add Budget'),
+                                    ),
+                                  )),
+                              Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+                                child: Container(
+                                  margin:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                                  height: 400.0,
+                                  child: FutureBuilder(
+                                      future: budgetsList,
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<List<Budgets>>
+                                          snapshot) {
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.done &&
+                                            retrievedBudgetList?.isEmpty ==
+                                                null) {
+                                          const Center(
+                                            child: Text(
+                                              'No Budgets Yet',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 20.0),
+                                            ),
+                                          );
+                                        }
+                                        if (retrievedBudgetList?.isEmpty ??
+                                            true) {
+                                          return const Center(
+                                            child: Text(
+                                              'No Budgets Yet',
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 20.0),
+                                            ),
+                                          );
+                                        }
+                                        if (snapshot.hasData &&
+                                            snapshot.data != null) {
+                                          return Center(
+                                            child: ListView.separated(
+                                              shrinkWrap: true,
+                                              separatorBuilder:
+                                                  (BuildContext context,
+                                                  int index) {
+                                                return const SizedBox(
+                                                    height: 15);
+                                              },
+                                              primary: false,
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount:
+                                              retrievedBudgetList?.length ??
+                                                  0,
+                                              itemBuilder: _itemBuilder,
+                                            ),
+                                          );
+                                        } else {
+                                          return const LoadingIndicator();
+                                        }
+                                      }),
+                                ),
+                              )
+                            ]),
+                            Column(
+                              children: [
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        30.0, 0.0, 30.0, 0.0),
+                                    child: Align(
+                                      alignment: Alignment.topRight,
+                                      child: TextButton(
+                                        style: TextButton.styleFrom(
+                                          primary: const Color.fromARGB(
+                                              255, 1, 8, 14),
+                                          textStyle: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                const FinancesPage()),
+                                          ).then((_) {
+                                            setState(() {
+                                              getAllData();
+                                            });
+                                          });
+                                        },
+                                        child: const Text('View All'),
+                                      ),
+                                    )),
+                                Container(
+                                  height: 350.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15.0, 0, 15.0, 0),
+                                    child: FutureBuilder(
+                                        future: transactionsCreditList,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot<List<Transactions>>
+                                            snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.done &&
+                                              retrievedTransactionsCreditList
+                                                  ?.isEmpty ==
+                                                  null) {
+                                            const Center(
+                                              child: Text(
+                                                'No Transactions Yet',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 20.0),
+                                              ),
+                                            );
+                                          }
+                                          if (retrievedTransactionsCreditList
+                                              ?.isEmpty ??
+                                              true) {
+                                            return const Center(
+                                              child: Text(
+                                                'No Transactions Yet',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 20.0),
+                                              ),
+                                            );
+                                          }
+                                          if (snapshot.hasData &&
+                                              snapshot.data != null) {
+                                            return ListView.separated(
+                                              shrinkWrap: true,
+                                              separatorBuilder:
+                                                  (BuildContext context,
+                                                  int index) {
+                                                return const SizedBox(
+                                                    height: 15);
+                                              },
+                                              primary: false,
+                                              scrollDirection: Axis.vertical,
+                                              itemCount:
+                                              retrievedTransactionsCreditList
+                                                  ?.length ??
+                                                  0,
+                                              itemBuilder:
+                                              _transactionItemBuilder,
+                                            );
+                                          } else {
+                                            return const Center(
+                                              child: LoadingIndicator(),
+                                            );
+                                          }
+                                        }),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (_loading) const Center(child: LoadingIndicator())
+      ],
+    );
   }
 }
 
