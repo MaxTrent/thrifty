@@ -37,7 +37,7 @@ class AppTheme {
   ThemeData get light => ThemeData(
     primaryColor: AppColors.secondary,
     brightness: Brightness.light,
-    colorScheme: lightBase.colorScheme.copyWith(primary: Colors.white, secondary: AppColors.secondary),
+    colorScheme: lightBase.colorScheme.copyWith(primary: Colors.black, secondary: AppColors.secondary),
     visualDensity: visualDensity,
     textTheme: TextTheme(
     headline1: GoogleFonts.nunito(
@@ -103,7 +103,7 @@ class AppTheme {
   ThemeData get dark => ThemeData(
     brightness: Brightness.dark,
     primaryColor: Colors.white,
-    colorScheme: darkBase.colorScheme.copyWith(primary: Colors.black, secondary: Colors.white),
+    colorScheme: darkBase.colorScheme.copyWith(primary: Colors.white, secondary: Colors.white),
     visualDensity: visualDensity,
     // textTheme:
     // GoogleFonts.interTextTheme().apply(bodyColor: AppColors.textLight),

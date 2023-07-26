@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -171,7 +172,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                             borderRadius:
                                             BorderRadius.circular(30),
                                           ),
-                                          primary:
+                                          backgroundColor:
                                           const Color.fromARGB(255, 35, 63, 105),
                                           minimumSize:
                                           const Size.fromHeight(60),
@@ -205,7 +206,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                           borderRadius:
                                           BorderRadius.circular(30),
                                         ),
-                                        primary: Colors.red[900],
+                                        backgroundColor: Colors.red[900],
                                         minimumSize: const Size.fromHeight(60),
                                         textStyle: const TextStyle(
                                             color: Colors.white,
@@ -497,21 +498,28 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
   Future<void> getDefaultValues() async {
     final User? user = auth.currentUser;
 
-    await FirebaseFirestore.instance
-        .collection("users")
-        .where('userId', isEqualTo: user!.uid)
-        .limit(1)
-        .get()
-        .then((value) => value.docs.forEach((doc) {
-      final data = doc.data()['amount'].toString();
-      var currencyFormat =
-      NumberFormat.currency(locale: "en_NG", symbol: "₦")
-          .format(double.parse(data));
+    // if (user != null) {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .where('userId', isEqualTo: user!.uid)
+          .limit(1)
+          .get()
+          .then((value) =>
+          value.docs.forEach((doc) {
+            final data = doc.data()['amount'].toString();
+            var currencyFormat =
+            NumberFormat.currency(locale: "en_NG", symbol: "₦")
+                .format(double.parse(data));
+
 
       setState(() {
         totalAmt = currencyFormat.toString();
       });
     }));
+    // } else{
+    //   Navigator.pushReplacementNamed(context, '/');
+    // return;
+    // }
 
     if (user.photoURL?.isEmpty == null) {
       setState(() => _imageLoaded = false);
@@ -647,8 +655,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          barrierColor:
-          Colors.black26;
+          // barrierColor:
+          // Colors.black26;
           return CustomDialog(title: title, description: description);
         });
   }
@@ -670,8 +678,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          barrierColor:
-          Colors.black26;
+          // barrierColor:
+          // Colors.black26;
           return StatefulBuilder(builder: (context, setDialogState) {
             return Dialog(
               elevation: 0,
@@ -707,7 +715,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 5.0,
-                              primary: const Color.fromARGB(255, 183, 181, 181),
+                              backgroundColor: const Color.fromARGB(255, 183, 181, 181),
                               minimumSize: const Size(100, 50),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0))),
@@ -721,7 +729,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 5.0,
-                              primary: Colors.red[900],
+                              backgroundColor: Colors.red[900],
                               minimumSize: const Size(100, 50),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0))),
@@ -757,12 +765,14 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     final User? user = auth.currentUser;
 
     if (user?.uid.isEmpty == null) {
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.pushNamedAndRemoveUntil(
             context, '/', (Route<dynamic> route) => false);
       });
     } else {
-      print("user Id ${user!.uid}");
+      if (kDebugMode) {
+        print("user Id ${user!.uid}");
+      }
     }
 
     return Stack(
@@ -832,14 +842,9 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                           const SizedBox(
                             width: 50.0,
                           ),
-                          const Text(
+                          Text(
                             'DashboardPage',
-                            style: TextStyle(
-                              letterSpacing: 0.5,
-                              fontSize: 22.0,
-                              fontWeight: FontWeight.w900,
-                              color: Color.fromARGB(255, 35, 63, 105),
-                            ),
+                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).colorScheme.primary),
                           ),
                         ],
                       ),
@@ -880,7 +885,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                         alignment: Alignment.bottomLeft,
                                         child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                                primary: Colors.blue,
+                                                backgroundColor: const Color.fromARGB(255, 35, 63, 105),
                                                 minimumSize: const Size(50, 45),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
@@ -1014,13 +1019,13 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                                                             40.0,
                                                                           ),
                                                                           ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(
-                                                                                  shape: RoundedRectangleBorder(
-                                                                                    borderRadius: BorderRadius.circular(10),
-                                                                                  ),
-                                                                                  primary: const Color.fromARGB(255, 4, 44, 76),
-                                                                                  minimumSize: const Size.fromHeight(60),
-                                                                                  textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                                                                              // style: ElevatedButton.styleFrom(
+                                                                              //     shape: RoundedRectangleBorder(
+                                                                              //       borderRadius: BorderRadius.circular(10),
+                                                                              //     ),
+                                                                              //     backgroundColor: const Color.fromARGB(255, 4, 44, 76),
+                                                                              //     minimumSize: const Size.fromHeight(60),
+                                                                              //     textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                                                                               onPressed: !_loading
                                                                                   ? () {
                                                                                 if (_formKey.currentState!.validate()) {
@@ -1058,7 +1063,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                       Align(
                                         alignment: Alignment.center,
                                         child: Text(
-                                            '${DateFormat('yMMMMd').format(DateTime.now())}',
+                                            DateFormat('yMMMMd').format(DateTime.now()),
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                                 letterSpacing: 0.5,
@@ -1086,11 +1091,11 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                             Tab(text: 'Expenses'),
                             Tab(
                               text: 'Income',
-                            )
+                            ),
                           ],
                           indicator: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              color: const Color.fromARGB(255, 35, 63, 105)),
+                              color: AppColors.secondary),
                           unselectedLabelColor: Colors.grey[700],
                           labelColor: Colors.white,
                           labelStyle: const TextStyle(
@@ -1111,8 +1116,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                     alignment: Alignment.topRight,
                                     child: TextButton(
                                       style: TextButton.styleFrom(
-                                        primary:
-                                        const Color.fromARGB(255, 1, 8, 14),
+                                        backgroundColor:
+                                        AppColors.secondary,
                                         textStyle: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
@@ -1129,7 +1134,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                           });
                                         });
                                       },
-                                      child: const Text('+ Add Budget'),
+                                      child: Text('+',
+                                      style: Theme.of(context).textTheme.headline1,),
                                     ),
                                   )),
                               Padding(
@@ -1206,7 +1212,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                       alignment: Alignment.topRight,
                                       child: TextButton(
                                         style: TextButton.styleFrom(
-                                          primary: const Color.fromARGB(
+                                          backgroundColor: const Color.fromARGB(
                                               255, 1, 8, 14),
                                           textStyle: const TextStyle(
                                               fontSize: 18,
