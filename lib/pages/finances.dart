@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrifty/models/models.dart';
 import 'package:thrifty/widgets/widgets.dart';
@@ -43,21 +44,33 @@ class _FinancesPageState extends State<FinancesPage> {
   }
 
   Future<void> _initRetrieval() async {
-    setState(() {
-      _loading = true;
-    });
-    transactionsList = service.retrieveAllTransactions();
-    retrievedTransactionsList = await service.retrieveAllTransactions();
+    try {
+      // setState(() {
+      //   _loading = true;
+      // });
 
-    retrievedTransactionsList!.sort(
-      (a, b) {
-        return b.transactionDate.compareTo(a.transactionDate);
-      },
-    );
-    setState(() {
-      _loading = false;
-    });
+      transactionsList = service.retrieveAllTransactions();
+      retrievedTransactionsList = await service.retrieveAllTransactions();
+
+      retrievedTransactionsList!.sort(
+            (a, b) {
+          return b.transactionDate.compareTo(a.transactionDate);
+        },
+      );
+      setState(() {
+        _loading = false;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in retrieving transactions: $e');
+        errorDialog('Error in retrieving transactions', true);
+      }
+      setState(() {
+        _loading = false;
+      });
+    }
   }
+
 
   @override
   void dispose() {
@@ -333,13 +346,11 @@ class _FinancesPageState extends State<FinancesPage> {
                               );
                             }
                             if (retrievedTransactionsList?.isEmpty ?? true) {
-                              return Container(
-                                child: const Center(
-                                  child: Text(
-                                    'No Transactions Yet',
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 20.0),
-                                  ),
+                              return const Center(
+                                child: Text(
+                                  'No Transactions Yet',
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 20.0),
                                 ),
                               );
                             }
@@ -933,13 +944,14 @@ class _FinancesPageState extends State<FinancesPage> {
     });
   }
 
-  void errorDialog(errorMessage, isError) {
+  void errorDialog(String errorMessage, bool isError) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? Colors.red[600] : Colors.green[600],
         elevation: 0,
         content: Text(
           errorMessage,
+          style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white),
           textAlign: TextAlign.center,
         )));
   }

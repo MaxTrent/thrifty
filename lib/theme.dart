@@ -144,15 +144,26 @@ class AppTheme {
       systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
     scaffoldBackgroundColor: _DarkColors.background,
+    // elevatedButtonTheme: ElevatedButtonThemeData(
+    //     style: ElevatedButton.styleFrom(
+    //         backgroundColor: Colors.white,
+    //         minimumSize: const Size.fromHeight(50),
+    //         textStyle: GoogleFonts.nunito(
+    //             textStyle: const TextStyle(
+    //             color: Colors.black,
+    //             fontSize: 20,
+    //             fontWeight: FontWeight.bold)))
+    // ),
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
+            backgroundColor: AppColors.secondary,
+            // primary: AppColors.secondary,
             minimumSize: const Size.fromHeight(50),
             textStyle: GoogleFonts.nunito(
                 textStyle: const TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.bold)))
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold)))
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         selectedItemColor: Colors.white

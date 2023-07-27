@@ -26,8 +26,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
 
   void error(errorMessage) {
-    if (_messengerKey.currentState != null){
-      _messengerKey.currentState!.showSnackBar(SnackBar(
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: Colors.red[600],
           elevation: 0,
@@ -35,7 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             errorMessage,
             textAlign: TextAlign.center,
           )));
-    }
+
 
   }
 
@@ -360,10 +360,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 : null,
                             child: Text(
                               'Create Account',
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .headline1,
+                              style:Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).colorScheme.primary),
                             )),
                         const SizedBox(
                           height: 10.0,

@@ -16,7 +16,6 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   bool _loading = false;
   bool _obscureText = true;
-  final _messengerKey = GlobalKey<ScaffoldMessengerState>();
   FirebaseAuth auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -25,7 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    checkIfSignedIn();
+    // checkIfSignedIn();
   }
 
   @override
@@ -88,8 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   error(errorMessage) {
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (_messengerKey.currentState != null) {
-        _messengerKey.currentState!.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             width: MediaQuery.of(context).size.width,
             behavior: SnackBarBehavior.floating,
@@ -101,7 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
           ),
         );
-      }
+      
     });
   }
 
@@ -214,7 +212,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 : null,
                             child: Text(
                               'Sign in',
-                              style: Theme.of(context).textTheme.headline1,
+                              style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).colorScheme.primary),
                             )),
                         const SizedBox(
                           height: 10.0,

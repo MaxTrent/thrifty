@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thrifty/models/models.dart';
@@ -14,7 +15,7 @@ class DatabaseService {
 
 
   DatabaseService() {
-    // user = auth.currentUser;
+    user = auth.currentUser;
   }
 
   Future<List<Budgets>> retrieveBudgets() async {
@@ -85,48 +86,58 @@ class DatabaseService {
       "User": user!.uid,
       "TransactionDescription": description,
       "TransactionTitle": title,
-      "LowerCaseTrasactionTitle": title.toLowerCase(),
+      "LowerCaseTransactionTitle": title.toLowerCase(),
       "TransactionType": transactionType,
       "TransactionAmount": amount,
       "TransactionDate": date,
     }).then((DocumentReference doc) {
-      print('Transaction added successfully');
+      if (kDebugMode) {
+        print('Transaction added successfully');
+      }
       errorDialog('Transaction Added successfully', false, context);
     }).onError((e, _) {
-      print("Error writing document: $e");
+      if (kDebugMode) {
+        print("Error writing document: $e");
+      }
       errorDialog(e.toString(), true, context);
     });
   }
 
   Future<void> checkResetTime() async {
-    await FirebaseFirestore.instance
-        .collection("users")
-        .where('userId', isEqualTo: user!.uid)
-        .limit(1)
-        .get()
-        .then((value) => value.docs.forEach((doc) {
-      final data = doc.data()['lastResetTime'].toDate();
-      if (daysBetween(data, DateTime.now()) >= 1) {
-        FirebaseFirestore.instance
-            .collection("users")
-            .where('userId', isEqualTo: user!.uid)
-            .limit(1)
-            .get()
-            .then((value) => value.docs.forEach((doc) {
-          doc.reference.update({
-            'amountReset': 0,
-            'lastResetTime': DateTime.now()
-          });
-        }));
-      }
-    }));
+    try{
+      await FirebaseFirestore.instance
+          .collection("users")
+          .where('userId', isEqualTo: user!.uid)
+          .limit(1)
+          .get()
+          .then((value) => value.docs.forEach((doc) {
+                final data = doc.data()['lastResetTime'].toDate();
+                if (daysBetween(data, DateTime.now()) >= 1) {
+                  FirebaseFirestore.instance
+                      .collection("users")
+                      .where('userId', isEqualTo: user!.uid)
+                      .limit(1)
+                      .get()
+                      .then((value) => value.docs.forEach((doc) {
+                            doc.reference.update({
+                              'amountReset': 0,
+                              'lastResetTime': DateTime.now()
+                            });
+                          }));
+                }
+              }));
+    } catch(e){
+      print('Error in resetting time: $e');
+    }
   }
 
   int daysBetween(DateTime from, DateTime to) {
     from = DateTime(from.year, from.month, from.day);
     to = DateTime(to.year, to.month, to.day);
     int noOfDays = (to.difference(from).inHours / 24).round();
-    print("no Of Days: ${noOfDays}");
+    if (kDebugMode) {
+      print("no Of Days: $noOfDays");
+    }
     return noOfDays;
   }
 

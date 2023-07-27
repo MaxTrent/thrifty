@@ -140,12 +140,12 @@ class _UserPageState extends State<UserPage> {
                                               elevation: 2.0,
                                               fillColor:
                                                   const Color(0xFFF5F6F9),
-                                              child: const Icon(
-                                                Icons.camera_alt_outlined,
-                                              ),
                                               padding:
                                                   const EdgeInsets.all(15.0),
                                               shape: const CircleBorder(),
+                                              child: const Icon(
+                                                Icons.camera_alt_outlined,
+                                              ),
                                             ))
                                       ],
                                     )
@@ -167,12 +167,12 @@ class _UserPageState extends State<UserPage> {
                                               elevation: 2.0,
                                               fillColor:
                                                   const Color(0xFFF5F6F9),
-                                              child: const Icon(
-                                                Icons.camera_alt_outlined,
-                                              ),
                                               padding:
                                                   const EdgeInsets.all(15.0),
                                               shape: const CircleBorder(),
+                                              child: const Icon(
+                                                Icons.camera_alt_outlined,
+                                              ),
                                             )),
                                       ],
                                     )),
@@ -1252,7 +1252,7 @@ class _UserPageState extends State<UserPage> {
     }
   }
 
-  /// Get from Camera
+  ///Get from Camera
   _getFromCamera() async {
     Navigator.pop(context);
     var path;

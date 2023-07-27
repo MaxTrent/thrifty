@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AddBudget extends StatefulWidget {
   const AddBudget({Key? key}) : super(key: key);
@@ -102,7 +101,7 @@ class _AddBudgetState extends State<AddBudget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       getEditValuesIfExist();
     });
   }
@@ -118,7 +117,6 @@ class _AddBudgetState extends State<AddBudget> {
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: Colors.white,
           appBar: AppBar(
             leading: BackButton(
               color: Theme.of(context).colorScheme.primary,
@@ -126,7 +124,6 @@ class _AddBudgetState extends State<AddBudget> {
                 Navigator.pop(context);
               },
             ),
-            backgroundColor: Colors.white,
             title: Text(
               'Create Budget',
               style: Theme.of(context)
@@ -534,7 +531,6 @@ class _AddBudgetState extends State<AddBudget> {
                             height: 60.0,
                           ),
                           ElevatedButton(
-
                               onPressed: !_loading
                                   ? () {
                                 if (_formKey.currentState!.validate()) {
@@ -547,7 +543,6 @@ class _AddBudgetState extends State<AddBudget> {
                                       .toString()
                                       .replaceAll(',', '')
                                       .replaceAll('₦', '');
-
                                   String dailyAmt = _dailyLimitController
                                       .text
                                       .toString()
@@ -575,11 +570,8 @@ class _AddBudgetState extends State<AddBudget> {
               )),
         ),
         if (_loading)
-          Center(
-            child: SpinKitSquareCircle(
-              color: Colors.blue[500],
-              size: 100.0,
-            ),
+          const Center(
+            child: LoadingIndicator(),
           ),
       ],
     );
@@ -837,8 +829,6 @@ class _AddBudgetState extends State<AddBudget> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
-          barrierColor:
-          Colors.black26;
           return CustomDialog(title: title, description: description);
         });
   }

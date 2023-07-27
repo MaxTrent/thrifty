@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +17,6 @@ import '../widgets/widgets.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter_svg/svg.dart';
 
-
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
 
@@ -26,11 +24,13 @@ class DashboardPage extends StatefulWidget {
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> with TickerProviderStateMixin {
+class _DashboardPageState extends State<DashboardPage>
+    with TickerProviderStateMixin {
   late TabController tabController;
   late double percent;
   bool _loading = false;
   ScrollController? _controller;
+
   // ignore: prefer_typing_uninitialized_variables
   var userEmail;
   String totalAmt = '₦ 0.0',
@@ -49,6 +49,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
   Future<List<Transactions>>? transactionsCreditList;
   List<Transactions>? retrievedTransactionsCreditList;
   bool _imageLoaded = false;
+
   // ignore: prefer_typing_uninitialized_variables
   var img;
 
@@ -75,16 +76,16 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     retrievedBudgetList = await service.retrieveBudgets();
     transactionsCreditList = service.retrieveTransactionsCredit();
     retrievedTransactionsCreditList =
-    await service.retrieveTransactionsCredit();
+        await service.retrieveTransactionsCredit();
 
     retrievedTransactionsCreditList!.sort(
-          (a, b) {
+      (a, b) {
         return b.transactionDate.compareTo(a.transactionDate);
       },
     );
 
     retrievedBudgetList!.sort(
-          (a, b) {
+      (a, b) {
         return b.presentDate.compareTo(DateTime.parse(a.startDate));
       },
     );
@@ -99,8 +100,6 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     _amountDescriptionController.dispose();
     super.dispose();
   }
-
-
 
   Widget _itemBuilder(BuildContext context, int index) {
     DateTime start = DateTime.parse(retrievedBudgetList![index].startDate);
@@ -163,7 +162,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                         return Padding(
                             padding: EdgeInsets.only(
                                 bottom:
-                                MediaQuery.of(context).viewInsets.bottom),
+                                    MediaQuery.of(context).viewInsets.bottom),
                             child: Container(
                               padding: const EdgeInsets.all(25.0),
                               child: Column(
@@ -176,26 +175,26 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                       style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                            BorderRadius.circular(30),
+                                                BorderRadius.circular(30),
                                           ),
-                                          backgroundColor:
-                                          const Color.fromARGB(255, 35, 63, 105),
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 35, 63, 105),
                                           minimumSize:
-                                          const Size.fromHeight(60),
+                                              const Size.fromHeight(60),
                                           textStyle: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 20,
                                               fontWeight: FontWeight.w700)),
                                       onPressed: () {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                const AddBudget(),
-                                                settings: RouteSettings(
-                                                    arguments:
-                                                    retrievedBudgetList![
-                                                    index])))
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const AddBudget(),
+                                                    settings: RouteSettings(
+                                                        arguments:
+                                                            retrievedBudgetList![
+                                                                index])))
                                             .then((_) {
                                           setState(() {
                                             getAllData();
@@ -210,7 +209,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                       style: ElevatedButton.styleFrom(
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                          BorderRadius.circular(30),
+                                              BorderRadius.circular(30),
                                         ),
                                         backgroundColor: Colors.red[900],
                                         minimumSize: const Size.fromHeight(60),
@@ -242,7 +241,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                   decoration: const BoxDecoration(
                       color: Color.fromARGB(255, 35, 63, 105),
                       borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(15.0))),
+                          BorderRadius.vertical(top: Radius.circular(15.0))),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20.0, 15.0, 10.0, 20.0),
                     child: Column(
@@ -354,7 +353,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
   Widget _transactionItemBuilder(BuildContext context, int index) {
     var transactionAmt = NumberFormat.currency(locale: "en_NG", symbol: "₦")
         .format(double.parse(
-        retrievedTransactionsCreditList![index].transactionAmount));
+            retrievedTransactionsCreditList![index].transactionAmount));
 
     String transactionName =
         retrievedTransactionsCreditList![index].transactionTitle;
@@ -378,13 +377,13 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
         retrievedTransactionsCreditList![index].transactionDate;
 
     if (service.daysBetween(
-        retrievedTransactionsCreditList![index].transactionDate,
-        DateTime.now()) ==
+            retrievedTransactionsCreditList![index].transactionDate,
+            DateTime.now()) ==
         0) {
       formattedTransacDate = 'Today';
     } else if (service.daysBetween(
-        retrievedTransactionsCreditList![index].transactionDate,
-        DateTime.now()) ==
+            retrievedTransactionsCreditList![index].transactionDate,
+            DateTime.now()) ==
         1) {
       formattedTransacDate = 'Yesterday';
     }
@@ -502,49 +501,51 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
   }
 
   Future<void> getDefaultValues() async {
-    final User? user = auth.currentUser;
+    try {
+      final User? user = auth.currentUser;
 
-    // if (user != null) {
+      // if (user != null) {
       await FirebaseFirestore.instance
           .collection("users")
           .where('userId', isEqualTo: user!.uid)
           .limit(1)
           .get()
-          .then((value) =>
-          value.docs.forEach((doc) {
-            final data = doc.data()['amount'].toString();
-            var currencyFormat =
-            NumberFormat.currency(locale: "en_NG", symbol: "₦")
-                .format(double.parse(data));
+          .then((value) => value.docs.forEach((doc) {
+                final data = doc.data()['amount'].toString();
+                var currencyFormat =
+                    NumberFormat.currency(locale: "en_NG", symbol: "₦")
+                        .format(double.parse(data));
 
+                setState(() {
+                  totalAmt = currencyFormat.toString();
+                });
+              }));
+      // } else{
+      //   Navigator.pushReplacementNamed(context, '/');
+      // return;
+      // }
+
+      if (user.photoURL?.isEmpty == null) {
+        setState(() => _imageLoaded = false);
+      } else {
+        img = Image.network(user.photoURL.toString());
+
+        img.image.resolve(const ImageConfiguration()).addListener(
+            ImageStreamListener((ImageInfo image, bool synchronousCall) {
+          if (mounted) {
+            setState(() => _imageLoaded = true);
+          }
+        }));
+      }
+
+      service.checkResetTime();
 
       setState(() {
-        totalAmt = currencyFormat.toString();
+        _loading = false;
       });
-    }));
-    // } else{
-    //   Navigator.pushReplacementNamed(context, '/');
-    // return;
-    // }
-
-    if (user.photoURL?.isEmpty == null) {
-      setState(() => _imageLoaded = false);
-    } else {
-      img = Image.network(user.photoURL.toString());
-
-      img.image.resolve(const ImageConfiguration()).addListener(
-          ImageStreamListener((ImageInfo image, bool synchronousCall) {
-            if (mounted) {
-              setState(() => _imageLoaded = true);
-            }
-          }));
+    } catch (e) {
+      print('Error with getting values: ${e.toString()}');
     }
-
-    service.checkResetTime();
-
-    setState(() {
-      _loading = false;
-    });
   }
 
   Future<void> addAmount(
@@ -562,9 +563,9 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
         .limit(1)
         .get()
         .then((value) => value.docs.forEach((doc) {
-      final data = doc.data()['amount'].toString();
-      initialAmt = data;
-    }));
+              final data = doc.data()['amount'].toString();
+              initialAmt = data;
+            }));
 
     amount = amount + double.parse(initialAmt);
 
@@ -574,18 +575,18 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
         .limit(1)
         .get()
         .then((value) => value.docs.forEach((doc) {
-      doc.reference.update({'amount': amount}).then((value) {
-        setModalState(() {
-          _amountController.clear();
-          _amountDescriptionController.clear();
-        });
+              doc.reference.update({'amount': amount}).then((value) {
+                setModalState(() {
+                  _amountController.clear();
+                  _amountDescriptionController.clear();
+                });
 
-        _dialogBuilder(context, 'SUCCESS', 'Amount Successfully Added');
-        getAllData();
-      }, onError: (e) {
-        _dialogBuilder(context, 'FAILURE', e.toString());
-      });
-    }));
+                _dialogBuilder(context, 'SUCCESS', 'Amount Successfully Added');
+                getAllData();
+              }, onError: (e) {
+                _dialogBuilder(context, 'FAILURE', e.toString());
+              });
+            }));
 
     await service.addTransaction(title, 'Money Added', false,
         amountAdded.toString(), DateTime.now(), context);
@@ -604,7 +605,6 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     final User? user = auth.currentUser;
     String currentUserAmount = totalAmt.replaceAll(',', '').replaceAll('₦', '');
 
-
     await FirebaseFirestore.instance
         .collection("expenses")
         .doc("budgets")
@@ -613,8 +613,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
         .limit(1)
         .get()
         .then((value) => value.docs.forEach((doc) {
-      doc.reference.delete().then((value) {});
-    }));
+              doc.reference.delete().then((value) {});
+            }));
 
     double remainingUserAmount = remainingAmt + double.parse(currentUserAmount);
 
@@ -624,22 +624,22 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
         .limit(1)
         .get()
         .then((value) => value.docs.forEach((doc) {
-      doc.reference.update(
-        {
-          'amount': remainingUserAmount.toString(),
-        },
-      ).onError((error, stackTrace) {
-        _dialogBuilder(context, 'FAILURE', error.toString());
-      }).then((value) {
-        if (remainingAmt > 0) {
-          if (budgetName.length > 15) {
-            budgetName = budgetName.substring(0, 7);
-          }
-          service.addTransaction(budgetName, 'Budget Deleted', false,
-              remainingAmt.toString(), DateTime.now(), context);
-        }
-      });
-    }));
+              doc.reference.update(
+                {
+                  'amount': remainingUserAmount.toString(),
+                },
+              ).onError((error, stackTrace) {
+                _dialogBuilder(context, 'FAILURE', error.toString());
+              }).then((value) {
+                if (remainingAmt > 0) {
+                  if (budgetName.length > 15) {
+                    budgetName = budgetName.substring(0, 7);
+                  }
+                  service.addTransaction(budgetName, 'Budget Deleted', false,
+                      remainingAmt.toString(), DateTime.now(), context);
+                }
+              });
+            }));
 
     setState(() {
       _loading = false;
@@ -721,14 +721,16 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               elevation: 5.0,
-                              backgroundColor: const Color.fromARGB(255, 183, 181, 181),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 183, 181, 181),
                               minimumSize: const Size(100, 50),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0))),
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: const Text('No', style: TextStyle(fontSize: 17.0))),
+                          child: const Text('No',
+                              style: TextStyle(fontSize: 17.0))),
                       const SizedBox(
                         width: 20.0,
                       ),
@@ -741,14 +743,14 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                   borderRadius: BorderRadius.circular(10.0))),
                           onPressed: !_loading
                               ? () {
-                            Navigator.pop(context);
-                            setState(() {
-                              _loading = true;
-                            });
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    _loading = true;
+                                  });
 
-                            deleteBudget(
-                                budgetName, remainingAmount, 'delete');
-                          }
+                                  deleteBudget(
+                                      budgetName, remainingAmount, 'delete');
+                                }
                               : null,
                           child: const Text(
                             'Yes',
@@ -800,57 +802,65 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                       Row(
                         children: [
                           Padding(
-                              padding: const EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
+                              padding:
+                                  const EdgeInsets.fromLTRB(25.0, 0, 8.0, 0),
                               child: _imageLoaded
                                   ? InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/userpage');
-                                },
-                                child: CircleAvatar(
-                                  radius: 30.0,
-                                  foregroundColor:
-                                  const Color.fromARGB(255, 223, 220, 220),
-                                  child: CachedNetworkImage(
-                                    imageUrl: user!.photoURL.toString(),
-                                    imageBuilder:
-                                        (context, imageProvider) =>
-                                        Container(
-                                          width: 80.0,
-                                          height: 80.0,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, '/userpage');
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 30.0,
+                                        foregroundColor: const Color.fromARGB(
+                                            255, 223, 220, 220),
+                                        child: CachedNetworkImage(
+                                          imageUrl: user!.photoURL.toString(),
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            width: 80.0,
+                                            height: 80.0,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
+                                            ),
                                           ),
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
                                         ),
-                                    placeholder: (context, url) =>
-                                        const CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(Icons.error),
-                                  ),
-                                ),
-                              )
+                                      ),
+                                    )
                                   : InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/userpage');
-                                },
-                                child: CircleAvatar(
-                                  radius: 30.0,
-                                  // foregroundColor: Colors.purple,
-                                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                                  backgroundImage:
-                                  const AssetImage('assets/profile.png'),
-                                ),
-                              )),
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, '/userpage');
+                                      },
+                                      child: CircleAvatar(
+                                        radius: 30.0,
+                                        // foregroundColor: Colors.purple,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        backgroundImage: const AssetImage(
+                                            'assets/profile.png'),
+                                      ),
+                                    )),
                           const SizedBox(
                             width: 50.0,
                           ),
                           Text(
                             'DashboardPage',
-                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).colorScheme.primary),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                           ),
                         ],
                       ),
@@ -859,7 +869,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                       ),
                       Padding(
                           padding:
-                          const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 1.0),
+                              const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 1.0),
                           child: Column(
                             children: [
                               Container(
@@ -891,69 +901,71 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                         alignment: Alignment.bottomLeft,
                                         child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                                backgroundColor: const Color.fromARGB(255, 35, 63, 105),
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                        255, 35, 63, 105),
                                                 minimumSize: const Size(50, 45),
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        15.0)),
+                                                        BorderRadius.circular(
+                                                            15.0)),
                                                 textStyle: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 18,
                                                     letterSpacing: 0.5,
                                                     fontWeight:
-                                                    FontWeight.bold)),
+                                                        FontWeight.bold)),
                                             onPressed: () {
                                               showModalBottomSheet<void>(
                                                   context: context,
                                                   isScrollControlled: true,
                                                   enableDrag: false,
                                                   shape:
-                                                  const RoundedRectangleBorder(
+                                                      const RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.vertical(
+                                                        BorderRadius.vertical(
                                                       top:
-                                                      Radius.circular(35.0),
+                                                          Radius.circular(35.0),
                                                     ),
                                                   ),
                                                   builder: (BuildContext
-                                                  context) =>
+                                                          context) =>
                                                       StatefulBuilder(builder:
                                                           (context,
-                                                          setModalState) {
+                                                              setModalState) {
                                                         return Padding(
                                                             padding: EdgeInsets.only(
                                                                 bottom: MediaQuery.of(
-                                                                    context)
+                                                                        context)
                                                                     .viewInsets
                                                                     .bottom),
                                                             child: Container(
                                                               padding:
-                                                              const EdgeInsets
-                                                                  .all(
-                                                                  25.0),
+                                                                  const EdgeInsets
+                                                                          .all(
+                                                                      25.0),
                                                               child: Form(
                                                                 key: _formKey,
                                                                 child: ListView(
                                                                     shrinkWrap:
-                                                                    true,
+                                                                        true,
                                                                     children: [
                                                                       Column(
                                                                         mainAxisSize:
-                                                                        MainAxisSize.min,
+                                                                            MainAxisSize.min,
                                                                         children: [
                                                                           const Align(
                                                                             alignment:
-                                                                            Alignment.centerLeft,
+                                                                                Alignment.centerLeft,
                                                                             child:
-                                                                            Text(
+                                                                                Text(
                                                                               'Amount',
                                                                               style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
                                                                             ),
                                                                           ),
                                                                           const SizedBox(
                                                                             height:
-                                                                            10.0,
+                                                                                10.0,
                                                                           ),
                                                                           TextFormField(
                                                                             inputFormatters: [
@@ -964,15 +976,21 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                                                               ),
                                                                               LengthLimitingTextInputFormatter(21),
                                                                             ],
-                                                                            controller: _amountController,
-                                                                            decoration: const InputDecoration(
+                                                                            controller:
+                                                                                _amountController,
+                                                                            decoration:
+                                                                                const InputDecoration(
                                                                               border: OutlineInputBorder(),
                                                                               hintText: '12,000.00',
                                                                             ),
-                                                                            keyboardType: TextInputType.number,
-                                                                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                            onFieldSubmitted: (value) {},
-                                                                            validator: (value) {
+                                                                            keyboardType:
+                                                                                TextInputType.number,
+                                                                            autovalidateMode:
+                                                                                AutovalidateMode.onUserInteraction,
+                                                                            onFieldSubmitted:
+                                                                                (value) {},
+                                                                            validator:
+                                                                                (value) {
                                                                               if (value!.trim().isEmpty) {
                                                                                 return 'Amount is required';
                                                                               } else if (value.replaceAll('₦', '') == '0') {
@@ -982,37 +1000,45 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                                                           ),
                                                                           const SizedBox(
                                                                             height:
-                                                                            40.0,
+                                                                                40.0,
                                                                           ),
                                                                           const Align(
                                                                             alignment:
-                                                                            Alignment.centerLeft,
+                                                                                Alignment.centerLeft,
                                                                             child:
-                                                                            Text(
+                                                                                Text(
                                                                               'Description',
                                                                               style: TextStyle(fontFamily: 'OpenSans', letterSpacing: 0.2, fontSize: 16.0, fontWeight: FontWeight.w600, color: Color.fromARGB(255, 67, 65, 65)),
                                                                             ),
                                                                           ),
                                                                           const SizedBox(
                                                                             height:
-                                                                            10.0,
+                                                                                10.0,
                                                                           ),
                                                                           TextFormField(
-                                                                            controller: _amountDescriptionController,
-                                                                            maxLength: 15,
+                                                                            controller:
+                                                                                _amountDescriptionController,
+                                                                            maxLength:
+                                                                                15,
                                                                             inputFormatters: <TextInputFormatter>[
                                                                               FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]")),
                                                                               LengthLimitingTextInputFormatter(100),
                                                                             ],
-                                                                            decoration: const InputDecoration(
+                                                                            decoration:
+                                                                                const InputDecoration(
                                                                               border: OutlineInputBorder(),
                                                                               hintText: 'Stuff',
                                                                             ),
-                                                                            keyboardType: TextInputType.text,
-                                                                            textCapitalization: TextCapitalization.sentences,
-                                                                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                                            onFieldSubmitted: (value) {},
-                                                                            validator: (value) {
+                                                                            keyboardType:
+                                                                                TextInputType.text,
+                                                                            textCapitalization:
+                                                                                TextCapitalization.sentences,
+                                                                            autovalidateMode:
+                                                                                AutovalidateMode.onUserInteraction,
+                                                                            onFieldSubmitted:
+                                                                                (value) {},
+                                                                            validator:
+                                                                                (value) {
                                                                               if (value!.trim().isEmpty) {
                                                                                 return 'Description is required';
                                                                               } else if (value.startsWith(RegExp(r'[0-9]'))) {
@@ -1022,29 +1048,30 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                                                           ),
                                                                           const SizedBox(
                                                                             height:
-                                                                            40.0,
+                                                                                40.0,
                                                                           ),
-                                                                          ElevatedButton(  onPressed: !_loading
+                                                                          ElevatedButton(
+                                                                              onPressed: !_loading
                                                                                   ? () {
-                                                                                if (_formKey.currentState!.validate()) {
-                                                                                  setState(() {
-                                                                                    _loading = true;
-                                                                                  });
-                                                                                  setModalState(() {
-                                                                                    _loading = true;
-                                                                                  });
+                                                                                      if (_formKey.currentState!.validate()) {
+                                                                                        setState(() {
+                                                                                          _loading = true;
+                                                                                        });
+                                                                                        setModalState(() {
+                                                                                          _loading = true;
+                                                                                        });
 
-                                                                                  String amount = _amountController.text.toString().replaceAll(',', '').replaceAll('₦', '').trim();
-                                                                                  String description = _amountDescriptionController.text.toString().trim();
+                                                                                        String amount = _amountController.text.toString().replaceAll(',', '').replaceAll('₦', '').trim();
+                                                                                        String description = _amountDescriptionController.text.toString().trim();
 
-                                                                                  addAmount(double.parse(amount), description, setModalState);
-                                                                                }
-                                                                              }
+                                                                                        addAmount(double.parse(amount), description, setModalState);
+                                                                                      }
+                                                                                    }
                                                                                   : null,
                                                                               child: const Text('Add Money')),
                                                                           const SizedBox(
                                                                             height:
-                                                                            30.0,
+                                                                                30.0,
                                                                           )
                                                                         ],
                                                                       ),
@@ -1061,7 +1088,8 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                       Align(
                                         alignment: Alignment.center,
                                         child: Text(
-                                            DateFormat('yMMMMd').format(DateTime.now()),
+                                            DateFormat('yMMMMd')
+                                                .format(DateTime.now()),
                                             textAlign: TextAlign.center,
                                             style: const TextStyle(
                                                 letterSpacing: 0.5,
@@ -1087,9 +1115,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                           controller: tabController,
                           tabs: const [
                             Tab(text: 'Expenses'),
-                            Tab(
-                              text: 'Income',
-                            ),
+                            Tab(text: 'Income'),
                           ],
                           indicator: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
@@ -1114,8 +1140,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                     alignment: Alignment.topRight,
                                     child: TextButton(
                                       style: TextButton.styleFrom(
-                                        backgroundColor:
-                                        AppColors.secondary,
+                                        backgroundColor: AppColors.secondary,
                                         textStyle: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
@@ -1125,31 +1150,39 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                              const AddBudget()),
+                                                  const AddBudget()),
                                         ).then((_) {
                                           setState(() {
                                             getAllData();
                                           });
                                         });
                                       },
-                                      child: Text('+',
-                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).colorScheme.primary),),
+                                      child: Text(
+                                        '+',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline1!
+                                            .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary),
+                                      ),
                                     ),
                                   )),
                               Padding(
                                 padding:
-                                const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+                                    const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
                                 child: Container(
                                   margin:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   height: 400.0,
                                   child: FutureBuilder(
                                       future: budgetsList,
                                       builder: (BuildContext context,
                                           AsyncSnapshot<List<Budgets>>
-                                          snapshot) {
+                                              snapshot) {
                                         if (snapshot.connectionState ==
-                                            ConnectionState.done &&
+                                                ConnectionState.done &&
                                             retrievedBudgetList?.isEmpty ==
                                                 null) {
                                           const Center(
@@ -1179,15 +1212,15 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                               shrinkWrap: true,
                                               separatorBuilder:
                                                   (BuildContext context,
-                                                  int index) {
+                                                      int index) {
                                                 return const SizedBox(
                                                     height: 15);
                                               },
                                               primary: false,
                                               scrollDirection: Axis.horizontal,
                                               itemCount:
-                                              retrievedBudgetList?.length ??
-                                                  0,
+                                                  retrievedBudgetList?.length ??
+                                                      0,
                                               itemBuilder: _itemBuilder,
                                             ),
                                           );
@@ -1210,8 +1243,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                       alignment: Alignment.topRight,
                                       child: TextButton(
                                         style: TextButton.styleFrom(
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 1, 8, 14),
+                                          backgroundColor: AppColors.secondary,
                                           textStyle: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.w600),
@@ -1221,7 +1253,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                const FinancesPage()),
+                                                    const FinancesPage()),
                                           ).then((_) {
                                             setState(() {
                                               getAllData();
@@ -1231,7 +1263,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                         child: const Text('View All'),
                                       ),
                                     )),
-                                Container(
+                                SizedBox(
                                   height: 350.0,
                                   child: Padding(
                                     padding: const EdgeInsets.fromLTRB(
@@ -1240,51 +1272,51 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                         future: transactionsCreditList,
                                         builder: (BuildContext context,
                                             AsyncSnapshot<List<Transactions>>
-                                            snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.done &&
-                                              retrievedTransactionsCreditList
-                                                  ?.isEmpty ==
-                                                  null) {
-                                            const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
-                                          if (retrievedTransactionsCreditList
-                                              ?.isEmpty ??
-                                              true) {
-                                            return const Center(
-                                              child: Text(
-                                                'No Transactions Yet',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 20.0),
-                                              ),
-                                            );
-                                          }
+                                                snapshot) {
+                                          // if (snapshot.connectionState ==
+                                          //         ConnectionState.done &&
+                                          //     retrievedTransactionsCreditList
+                                          //             ?.isEmpty ==
+                                          //         null) {
+                                          //   const Center(
+                                          //     child: Text(
+                                          //       'No Transactions Yet',
+                                          //       style: TextStyle(
+                                          //           color: Colors.grey,
+                                          //           fontSize: 20.0),
+                                          //     ),
+                                          //   );
+                                          // }
+                                          // if (retrievedTransactionsCreditList
+                                          //         ?.isEmpty ??
+                                          //     true) {
+                                          //   return const Center(
+                                          //     child: Text(
+                                          //       'No Transactions Yet',
+                                          //       style: TextStyle(
+                                          //           color: Colors.grey,
+                                          //           fontSize: 20.0),
+                                          //     ),
+                                          //   );
+                                          // }
                                           if (snapshot.hasData &&
                                               snapshot.data != null) {
                                             return ListView.separated(
                                               shrinkWrap: true,
                                               separatorBuilder:
                                                   (BuildContext context,
-                                                  int index) {
+                                                      int index) {
                                                 return const SizedBox(
                                                     height: 15);
                                               },
                                               primary: false,
                                               scrollDirection: Axis.vertical,
                                               itemCount:
-                                              retrievedTransactionsCreditList
-                                                  ?.length ??
-                                                  0,
+                                                  retrievedTransactionsCreditList
+                                                          ?.length ??
+                                                      0,
                                               itemBuilder:
-                                              _transactionItemBuilder,
+                                                  _transactionItemBuilder,
                                             );
                                           } else {
                                             return const Center(
@@ -1311,4 +1343,3 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
     );
   }
 }
-
