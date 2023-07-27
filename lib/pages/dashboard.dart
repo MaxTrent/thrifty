@@ -1006,7 +1006,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                                                             ],
                                                                             decoration: const InputDecoration(
                                                                               border: OutlineInputBorder(),
-                                                                              hintText: 'Bonus Amount',
+                                                                              hintText: 'Stuff',
                                                                             ),
                                                                             keyboardType: TextInputType.text,
                                                                             textCapitalization: TextCapitalization.sentences,
@@ -1024,15 +1024,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                                                             height:
                                                                             40.0,
                                                                           ),
-                                                                          ElevatedButton(
-                                                                              // style: ElevatedButton.styleFrom(
-                                                                              //     shape: RoundedRectangleBorder(
-                                                                              //       borderRadius: BorderRadius.circular(10),
-                                                                              //     ),
-                                                                              //     backgroundColor: const Color.fromARGB(255, 4, 44, 76),
-                                                                              //     minimumSize: const Size.fromHeight(60),
-                                                                              //     textStyle: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                                                                              onPressed: !_loading
+                                                                          ElevatedButton(  onPressed: !_loading
                                                                                   ? () {
                                                                                 if (_formKey.currentState!.validate()) {
                                                                                   setState(() {
@@ -1141,7 +1133,7 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
                                         });
                                       },
                                       child: Text('+',
-                                      style: Theme.of(context).textTheme.headline1,),
+                                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).colorScheme.primary),),
                                     ),
                                   )),
                               Padding(

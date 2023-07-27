@@ -69,12 +69,12 @@ class DatabaseService {
 
   Future<void> addTransaction(String title, String description, bool isDebit,
       String amount, DateTime date, context) async {
-    String trasactionType = '';
+    String transactionType = '';
 
     if (isDebit == true) {
-      trasactionType = 'Debit';
+      transactionType = 'Debit';
     } else {
-      trasactionType = 'Credit';
+      transactionType = 'Credit';
     }
 
     await FirebaseFirestore.instance
@@ -86,7 +86,7 @@ class DatabaseService {
       "TransactionDescription": description,
       "TransactionTitle": title,
       "LowerCaseTrasactionTitle": title.toLowerCase(),
-      "TransactionType": trasactionType,
+      "TransactionType": transactionType,
       "TransactionAmount": amount,
       "TransactionDate": date,
     }).then((DocumentReference doc) {

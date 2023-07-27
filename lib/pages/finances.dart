@@ -23,9 +23,7 @@ class _FinancesPageState extends State<FinancesPage> {
   final _transactionTypeController = TextEditingController();
   final _searchTextController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  var startDate,
-      minimumEndDate,
-      endDate;
+  var startDate, minimumEndDate, endDate;
   DatabaseService service = DatabaseService();
   Future<List<Transactions>>? transactionsList;
   List<Transactions>? retrievedTransactionsList;
@@ -76,8 +74,7 @@ class _FinancesPageState extends State<FinancesPage> {
       children: [
         Scaffold(
             appBar: AppBar(
-              leading:
-                  BackButton(color: Theme.of(context).colorScheme.primary),
+              leading: BackButton(color: Theme.of(context).colorScheme.primary),
               // backgroundColor: const Color.fromARGB(255, 242, 240, 240),
               title: Text(
                 'Transactions',
@@ -308,7 +305,7 @@ class _FinancesPageState extends State<FinancesPage> {
                             padding: const EdgeInsets.fromLTRB(0, 25.0, 0, 0),
                             child: ElevatedButton(
                                 onPressed: () {
-                                  filterTransactionyDate(startDate, endDate);
+                                  filterTransactionDate(startDate, endDate);
                                 },
                                 // style: Theme.of(context).elevatedButtonTheme.style,
                                 child: const Icon(Icons.search_outlined)),
@@ -392,7 +389,7 @@ class _FinancesPageState extends State<FinancesPage> {
                 _showSortPopupMenu();
               },
               child: Row(
-                children:  [
+                children: [
                   Text(
                     "Sort By",
                     style: Theme.of(context).textTheme.headline3,
@@ -430,7 +427,7 @@ class _FinancesPageState extends State<FinancesPage> {
                 Navigator.pop(context);
               },
               child: Row(
-                children:  [
+                children: [
                   Text(
                     "Name",
                     style: Theme.of(context).textTheme.headline3,
@@ -460,10 +457,10 @@ class _FinancesPageState extends State<FinancesPage> {
           child: TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _showtransactionType();
+                _showTransactionType();
               },
               child: Row(
-                children:  [
+                children: [
                   Text(
                     "Transaction Type",
                     style: Theme.of(context).textTheme.headline3,
@@ -483,10 +480,10 @@ class _FinancesPageState extends State<FinancesPage> {
           child: TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                ComplexTransacModal();
+                transactionModal();
               },
               child: Row(
-                children:  [
+                children: [
                   Text(
                     "Complex Search",
                     style: Theme.of(context).textTheme.headline3,
@@ -499,7 +496,7 @@ class _FinancesPageState extends State<FinancesPage> {
     );
   }
 
-  void _showtransactionType() async {
+  void _showTransactionType() async {
     await showMenu(
       context: context,
       position: const RelativeRect.fromLTRB(500, 100, 10, 100),
@@ -517,17 +514,17 @@ class _FinancesPageState extends State<FinancesPage> {
                 getCredit();
               },
               child: Row(
-                children: const [
-                  Icon(
+                children: [
+                  const Icon(
                     Icons.credit_score_outlined,
                     color: Color.fromARGB(255, 27, 94, 32),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 8.0,
                   ),
                   Text(
                     "Credits",
-                    style: TextStyle(color: Colors.black, fontSize: 15),
+                    style: Theme.of(context).textTheme.headline3,
                   ),
                 ],
               )),
@@ -543,15 +540,15 @@ class _FinancesPageState extends State<FinancesPage> {
                 getDebit();
               },
               child: Row(
-                children: const [
-                  Icon(Icons.credit_score_outlined,
+                children: [
+                  const Icon(Icons.credit_score_outlined,
                       color: Color.fromARGB(255, 183, 28, 28)),
-                  SizedBox(
+                  const SizedBox(
                     width: 8.0,
                   ),
                   Text(
                     "Debits",
-                    style: TextStyle(color: Colors.black, fontSize: 15),
+                    style: Theme.of(context).textTheme.headline3,
                   ),
                 ],
               )),
@@ -561,7 +558,7 @@ class _FinancesPageState extends State<FinancesPage> {
     );
   }
 
-  void _showtransactionType2() async {
+  void _showTransactionType2() async {
     await showMenu(
       context: context,
       position: const RelativeRect.fromLTRB(
@@ -837,17 +834,17 @@ class _FinancesPageState extends State<FinancesPage> {
 
   Future<void> getCredit() async {
     Future<List<Transactions>>? transactionsCreditList;
-    List<Transactions>? retrievedtransactionsCreditList;
+    List<Transactions>? retrievedTransactionsCreditList;
 
     setState(() {
       _loading = true;
     });
 
     transactionsCreditList = service.retrieveTransactionsCredit();
-    retrievedtransactionsCreditList =
+    retrievedTransactionsCreditList =
         await service.retrieveTransactionsCredit();
 
-    retrievedtransactionsCreditList.sort(
+    retrievedTransactionsCreditList.sort(
       (a, b) {
         return b.transactionDate.compareTo(a.transactionDate);
       },
@@ -855,7 +852,7 @@ class _FinancesPageState extends State<FinancesPage> {
 
     setState(() {
       transactionsList = transactionsCreditList;
-      retrievedTransactionsList = retrievedtransactionsCreditList;
+      retrievedTransactionsList = retrievedTransactionsCreditList;
 
       _loading = false;
     });
@@ -863,16 +860,16 @@ class _FinancesPageState extends State<FinancesPage> {
 
   Future<void> getDebit() async {
     Future<List<Transactions>>? transactionsDebitList;
-    List<Transactions>? retrievedtransactionsDebitList;
+    List<Transactions>? retrievedTransactionsDebitList;
 
     setState(() {
       _loading = true;
     });
 
     transactionsDebitList = service.retrieveTransactionsDebit();
-    retrievedtransactionsDebitList = await service.retrieveTransactionsDebit();
+    retrievedTransactionsDebitList = await service.retrieveTransactionsDebit();
 
-    retrievedtransactionsDebitList.sort(
+    retrievedTransactionsDebitList.sort(
       (a, b) {
         return b.transactionDate.compareTo(a.transactionDate);
       },
@@ -880,13 +877,12 @@ class _FinancesPageState extends State<FinancesPage> {
 
     setState(() {
       transactionsList = transactionsDebitList;
-      retrievedTransactionsList = retrievedtransactionsDebitList;
-
+      retrievedTransactionsList = retrievedTransactionsDebitList;
       _loading = false;
     });
   }
 
-  Future<void> filterTransactionyDate(DateTime from, DateTime to) async {
+  Future<void> filterTransactionDate(DateTime from, DateTime to) async {
     retrievedTransactionsList = await service.retrieveAllTransactions();
     List<Transactions> results = [];
     if (from.toString().isEmpty || to.toString().isEmpty) {
@@ -981,7 +977,7 @@ class _FinancesPageState extends State<FinancesPage> {
     });
   }
 
-  Future<void> ComplexTransacModal() {
+  Future<void> transactionModal() {
     return showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
@@ -1166,7 +1162,7 @@ class _FinancesPageState extends State<FinancesPage> {
                                 },
                                 readOnly: true,
                                 onTap: () {
-                                  _showtransactionType2();
+                                  _showTransactionType2();
                                 },
                               ))
                             ],
