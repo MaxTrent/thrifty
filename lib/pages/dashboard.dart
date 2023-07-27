@@ -68,6 +68,9 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
   }
 
   Future<void> _initRetrieval() async {
+    setState(() {
+      _loading = true;
+    });
     budgetsList = service.retrieveBudgets();
     retrievedBudgetList = await service.retrieveBudgets();
     transactionsCreditList = service.retrieveTransactionsCredit();
@@ -85,6 +88,9 @@ class _DashboardPageState extends State<DashboardPage> with TickerProviderStateM
         return b.presentDate.compareTo(DateTime.parse(a.startDate));
       },
     );
+    setState(() {
+      _loading = false;
+    });
   }
 
   @override

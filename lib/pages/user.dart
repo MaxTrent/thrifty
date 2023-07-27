@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+
 // import 'package:thrifty/screens/screens.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -44,7 +45,7 @@ class _UserPageState extends State<UserPage> {
   Widget build(BuildContext context) {
     final User? user = auth.currentUser;
     if (user?.uid.isEmpty == null) {
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.pushNamedAndRemoveUntil(
             context, '/', (Route<dynamic> route) => false);
       });
@@ -56,15 +57,15 @@ class _UserPageState extends State<UserPage> {
       children: [
         Scaffold(
           appBar: AppBar(
-            leading: const BackButton(color: Color.fromARGB(255, 4, 44, 76)),
-            backgroundColor: const Color.fromARGB(255, 242, 240, 240),
+            leading: BackButton(color:  Theme.of(context).colorScheme.primary),
+            // backgroundColor: const Color.fromARGB(255, 242, 240, 240),
             automaticallyImplyLeading: false,
-            title: const Text(
+            title: Text(
               'Profile',
-              style: TextStyle(
-                  letterSpacing: 0.6,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 4, 44, 76)),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline1!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
             ),
             centerTitle: true,
             elevation: 0,
@@ -77,159 +78,164 @@ class _UserPageState extends State<UserPage> {
               children: [
                 SafeArea(
                     child: Column(
-                      children: [
-                        Container(
-                          height: 270.0,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color.fromARGB(255, 223, 220, 220),
-                            ),
-                            borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(40.0),
-                                bottomRight: Radius.circular(40.0)),
-                            color: const Color.fromARGB(255, 242, 240, 240),
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Colors.grey, //New
-                                  blurRadius: 25.0,
-                                  offset: Offset(0, -10))
-                            ],
+                  children: [
+                    Container(
+                      height: 270.0,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          // color: const Color.fromARGB(255, 223, 220, 220),
+                        ),
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(40.0),
+                            bottomRight: Radius.circular(40.0)),
+                        // color: const Color.fromARGB(255, 242, 240, 240),
+                        boxShadow: const [
+                          BoxShadow(
+                              // color: Colors.grey, //New
+                              blurRadius: 25.0,
+                              offset: Offset(0, -10))
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 30.0,
                           ),
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 30.0,
-                              ),
-                              Center(
-                                  child: _imageLoaded
-                                      ? Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      CircleAvatar(
-                                          radius: 80.0,
-                                          child: CachedNetworkImage(
-                                            imageUrl:
-                                            user?.photoURL.toString() ??
-                                                '',
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                Container(
-                                                  width: 160.0,
-                                                  height: 160.0,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover),
-                                                  ),
+                          Center(
+                              child: _imageLoaded
+                                  ? Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 80.0,
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  user?.photoURL.toString() ??
+                                                      '',
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                width: 160.0,
+                                                height: 160.0,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover),
                                                 ),
-                                            placeholder: (context, url) =>
-                                                const CircularProgressIndicator(),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                const Icon(Icons.error),
-                                          )),
-                                      Positioned(
-                                          bottom: 0,
-                                          right: -25,
-                                          child: RawMaterialButton(
-                                            onPressed: () {
-                                              _dialogBuilder(context);
-                                            },
-                                            elevation: 2.0,
-                                            fillColor: const Color(0xFFF5F6F9),
-                                            child: const Icon(
-                                              Icons.camera_alt_outlined,
-                                            ),
-                                            padding: const EdgeInsets.all(15.0),
-                                            shape: const CircleBorder(),
-                                          ))
-                                    ],
-                                  )
-                                      : Stack(
-                                    clipBehavior: Clip.none,
-                                    children: [
-                                      const CircleAvatar(
-                                        radius: 80.0,
-                                        backgroundImage:
-                                        AssetImage('assets/profile.png'),
-                                      ),
-                                      Positioned(
-                                          bottom: 0,
-                                          right: -25,
-                                          child: RawMaterialButton(
-                                            onPressed: () {
-                                              _dialogBuilder(context);
-                                            },
-                                            elevation: 2.0,
-                                            fillColor: const Color(0xFFF5F6F9),
-                                            child: const Icon(
-                                              Icons.camera_alt_outlined,
-                                            ),
-                                            padding: const EdgeInsets.all(15.0),
-                                            shape: const CircleBorder(),
-                                          )),
-                                    ],
-                                  )),
-                              const SizedBox(
-                                height: 30.0,
-                              ),
-                              Text(
-                                fullName,
-                                style: const TextStyle(
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromARGB(255, 4, 44, 76),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 30.0,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 65.0,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: const Color.fromARGB(255, 223, 220, 220),
-                                    ),
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _editAccount = false;
-                                      buttonName = 'Edit Information';
-                                    });
-                                    _firstNameController.text = firstName;
-                                    _lastNameController.text = lastName;
-                                    showModalBottomSheet<void>(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        enableDrag: false,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(35.0),
-                                          ),
+                                              ),
+                                              placeholder: (context, url) =>
+                                                  const CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      const Icon(Icons.error),
+                                            )),
+                                        Positioned(
+                                            bottom: 0,
+                                            right: -25,
+                                            child: RawMaterialButton(
+                                              onPressed: () {
+                                                _dialogBuilder(context);
+                                              },
+                                              elevation: 2.0,
+                                              fillColor:
+                                                  const Color(0xFFF5F6F9),
+                                              child: const Icon(
+                                                Icons.camera_alt_outlined,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.all(15.0),
+                                              shape: const CircleBorder(),
+                                            ))
+                                      ],
+                                    )
+                                  : Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        const CircleAvatar(
+                                          radius: 80.0,
+                                          backgroundImage:
+                                              AssetImage('assets/profile.png'),
                                         ),
-                                        builder:
-                                            (BuildContext context) =>
+                                        Positioned(
+                                            bottom: 0,
+                                            right: -25,
+                                            child: RawMaterialButton(
+                                              onPressed: () {
+                                                _dialogBuilder(context);
+                                              },
+                                              elevation: 2.0,
+                                              fillColor:
+                                                  const Color(0xFFF5F6F9),
+                                              child: const Icon(
+                                                Icons.camera_alt_outlined,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.all(15.0),
+                                              shape: const CircleBorder(),
+                                            )),
+                                      ],
+                                    )),
+                          const SizedBox(
+                            height: 30.0,
+                          ),
+                          Text(
+                            fullName,
+                            style: const TextStyle(
+                              fontSize: 25.0,
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 4, 44, 76),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 223, 220, 220),
+                                ),
+                                borderRadius: BorderRadius.circular(20.0)),
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _editAccount = false;
+                                  buttonName = 'Edit Information';
+                                });
+                                _firstNameController.text = firstName;
+                                _lastNameController.text = lastName;
+                                showModalBottomSheet<void>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    enableDrag: false,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(35.0),
+                                      ),
+                                    ),
+                                    builder:
+                                        (BuildContext context) =>
                                             StatefulBuilder(builder:
                                                 (context, setModalState) {
                                               return Padding(
                                                 padding: EdgeInsets.only(
                                                     bottom:
-                                                    MediaQuery.of(context)
-                                                        .viewInsets
-                                                        .bottom),
+                                                        MediaQuery.of(context)
+                                                            .viewInsets
+                                                            .bottom),
                                                 child: Container(
                                                     padding:
-                                                    const EdgeInsets.all(
-                                                        25.0),
+                                                        const EdgeInsets.all(
+                                                            25.0),
                                                     child: Form(
                                                         key: _formKey,
                                                         child: ListView(
@@ -237,37 +243,37 @@ class _UserPageState extends State<UserPage> {
                                                           children: [
                                                             Column(
                                                                 mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
+                                                                    MainAxisSize
+                                                                        .min,
                                                                 children: [
                                                                   const Text(
                                                                     'Account Information',
                                                                     style: TextStyle(
                                                                         fontSize:
-                                                                        20.0,
+                                                                            20.0,
                                                                         fontWeight:
-                                                                        FontWeight.w700),
+                                                                            FontWeight.w700),
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
-                                                                    40.0,
+                                                                        40.0,
                                                                   ),
                                                                   const Align(
                                                                     alignment:
-                                                                    Alignment
-                                                                        .centerLeft,
+                                                                        Alignment
+                                                                            .centerLeft,
                                                                     child: Text(
                                                                       'First Name',
                                                                       style:
-                                                                      TextStyle(
+                                                                          TextStyle(
                                                                         fontFamily:
-                                                                        'OpenSans',
+                                                                            'OpenSans',
                                                                         letterSpacing:
-                                                                        0.6,
+                                                                            0.6,
                                                                         fontSize:
-                                                                        16.0,
+                                                                            16.0,
                                                                         fontWeight:
-                                                                        FontWeight.w600,
+                                                                            FontWeight.w600,
                                                                       ),
                                                                     ),
                                                                   ),
@@ -276,7 +282,7 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   Theme(
                                                                     data: Theme.of(
-                                                                        context)
+                                                                            context)
                                                                         .copyWith(
                                                                       colorScheme: ThemeData().colorScheme.copyWith(
                                                                           primary: const Color.fromARGB(
@@ -286,11 +292,11 @@ class _UserPageState extends State<UserPage> {
                                                                               106)),
                                                                     ),
                                                                     child:
-                                                                    TextFormField(
+                                                                        TextFormField(
                                                                       enabled:
-                                                                      _editAccount,
+                                                                          _editAccount,
                                                                       controller:
-                                                                      _firstNameController,
+                                                                          _firstNameController,
                                                                       inputFormatters: <
                                                                           TextInputFormatter>[
                                                                         FilteringTextInputFormatter.allow(
@@ -299,23 +305,23 @@ class _UserPageState extends State<UserPage> {
                                                                             100),
                                                                       ],
                                                                       decoration:
-                                                                      const InputDecoration(
+                                                                          const InputDecoration(
                                                                         focusedBorder:
-                                                                        OutlineInputBorder(),
+                                                                            OutlineInputBorder(),
                                                                         prefixIcon:
-                                                                        Icon(Icons.person_outline),
+                                                                            Icon(Icons.person_outline),
                                                                         border:
-                                                                        OutlineInputBorder(),
+                                                                            OutlineInputBorder(),
                                                                       ),
                                                                       keyboardType:
-                                                                      TextInputType
-                                                                          .text,
+                                                                          TextInputType
+                                                                              .text,
                                                                       textCapitalization:
-                                                                      TextCapitalization
-                                                                          .sentences,
+                                                                          TextCapitalization
+                                                                              .sentences,
                                                                       autovalidateMode:
-                                                                      AutovalidateMode
-                                                                          .onUserInteraction,
+                                                                          AutovalidateMode
+                                                                              .onUserInteraction,
                                                                       onFieldSubmitted:
                                                                           (value) {},
                                                                       validator:
@@ -333,24 +339,24 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
-                                                                    30.0,
+                                                                        30.0,
                                                                   ),
                                                                   const Align(
                                                                     alignment:
-                                                                    Alignment
-                                                                        .centerLeft,
+                                                                        Alignment
+                                                                            .centerLeft,
                                                                     child: Text(
                                                                       'Last Name',
                                                                       style:
-                                                                      TextStyle(
+                                                                          TextStyle(
                                                                         fontFamily:
-                                                                        'OpenSans',
+                                                                            'OpenSans',
                                                                         letterSpacing:
-                                                                        0.6,
+                                                                            0.6,
                                                                         fontSize:
-                                                                        16.0,
+                                                                            16.0,
                                                                         fontWeight:
-                                                                        FontWeight.w600,
+                                                                            FontWeight.w600,
                                                                       ),
                                                                     ),
                                                                   ),
@@ -359,7 +365,7 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   Theme(
                                                                     data: Theme.of(
-                                                                        context)
+                                                                            context)
                                                                         .copyWith(
                                                                       colorScheme: ThemeData().colorScheme.copyWith(
                                                                           primary: const Color.fromARGB(
@@ -369,11 +375,11 @@ class _UserPageState extends State<UserPage> {
                                                                               106)),
                                                                     ),
                                                                     child:
-                                                                    TextFormField(
+                                                                        TextFormField(
                                                                       enabled:
-                                                                      _editAccount,
+                                                                          _editAccount,
                                                                       controller:
-                                                                      _lastNameController,
+                                                                          _lastNameController,
                                                                       inputFormatters: <
                                                                           TextInputFormatter>[
                                                                         FilteringTextInputFormatter.allow(
@@ -382,23 +388,23 @@ class _UserPageState extends State<UserPage> {
                                                                             100),
                                                                       ],
                                                                       decoration:
-                                                                      const InputDecoration(
+                                                                          const InputDecoration(
                                                                         focusedBorder:
-                                                                        OutlineInputBorder(),
+                                                                            OutlineInputBorder(),
                                                                         prefixIcon:
-                                                                        Icon(Icons.person_outline),
+                                                                            Icon(Icons.person_outline),
                                                                         border:
-                                                                        OutlineInputBorder(),
+                                                                            OutlineInputBorder(),
                                                                       ),
                                                                       keyboardType:
-                                                                      TextInputType
-                                                                          .text,
+                                                                          TextInputType
+                                                                              .text,
                                                                       textCapitalization:
-                                                                      TextCapitalization
-                                                                          .sentences,
+                                                                          TextCapitalization
+                                                                              .sentences,
                                                                       autovalidateMode:
-                                                                      AutovalidateMode
-                                                                          .onUserInteraction,
+                                                                          AutovalidateMode
+                                                                              .onUserInteraction,
                                                                       onFieldSubmitted:
                                                                           (value) {},
                                                                       validator:
@@ -416,7 +422,7 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
-                                                                    60.0,
+                                                                        60.0,
                                                                   ),
                                                                   ElevatedButton(
                                                                       style: ElevatedButton.styleFrom(
@@ -433,97 +439,98 @@ class _UserPageState extends State<UserPage> {
                                                                               fontWeight: FontWeight.w600)),
                                                                       onPressed: !_loading
                                                                           ? () {
-                                                                        String name1, name2;
-                                                                        name1 = _firstNameController.text.toString();
+                                                                              String name1, name2;
+                                                                              name1 = _firstNameController.text.toString();
 
-                                                                        name2 = _lastNameController.text.toString();
-                                                                        if (_formKey.currentState!.validate()) {
-                                                                          editAccountInfo(setModalState, name1.trim(), name2.trim());
-                                                                        }
-                                                                      }
+                                                                              name2 = _lastNameController.text.toString();
+                                                                              if (_formKey.currentState!.validate()) {
+                                                                                editAccountInfo(setModalState, name1.trim(), name2.trim());
+                                                                              }
+                                                                            }
                                                                           : null,
                                                                       child: Text(buttonName)),
                                                                   const SizedBox(
                                                                     height:
-                                                                    50.0,
+                                                                        50.0,
                                                                   )
                                                                 ]),
                                                           ],
                                                         ))),
                                               );
                                             }));
-                                  },
-                                  child: Row(
-                                    children: const [
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.fromLTRB(15.0, 0, 8.0, 0),
-                                        child: Icon(
-                                          Icons.person_outline,
-                                          size: 30.0,
-                                          color: Color.fromARGB(255, 4, 44, 76),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.fromLTRB(50.0, 0, 10.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            'Account Information',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.fromLTRB(50.0, 0, 0.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Icon(Icons.arrow_forward),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 30.0,
-                              ),
-                              Container(
-                                height: 65.0,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: const Color.fromARGB(255, 223, 220, 220),
+                              },
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(15.0, 0, 8.0, 0),
+                                    child: Icon(
+                                      Icons.person_outline,
+                                      size: 30.0,
+                                      color:  Theme.of(context).colorScheme.primary,
                                     ),
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                child: InkWell(
-                                  onTap: () {
-                                    showModalBottomSheet<void>(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        enableDrag: false,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(35.0),
-                                          ),
-                                        ),
-                                        builder:
-                                            (BuildContext context) =>
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(50.0, 0, 10.0, 0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Account Information',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(50.0, 0, 0.0, 0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Icon(Icons.arrow_forward),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 30.0,
+                          ),
+                          Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 223, 220, 220),
+                                ),
+                                borderRadius: BorderRadius.circular(20.0)),
+                            child: InkWell(
+                              onTap: () {
+                                showModalBottomSheet<void>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    enableDrag: false,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(35.0),
+                                      ),
+                                    ),
+                                    builder:
+                                        (BuildContext context) =>
                                             StatefulBuilder(builder:
                                                 (context, setModalState2) {
                                               return Padding(
                                                 padding: EdgeInsets.only(
                                                     bottom:
-                                                    MediaQuery.of(context)
-                                                        .viewInsets
-                                                        .bottom),
+                                                        MediaQuery.of(context)
+                                                            .viewInsets
+                                                            .bottom),
                                                 child: Container(
                                                     padding:
-                                                    const EdgeInsets.all(
-                                                        25.0),
+                                                        const EdgeInsets.all(
+                                                            25.0),
                                                     child: Form(
                                                         key: _formKey,
                                                         child: ListView(
@@ -531,37 +538,37 @@ class _UserPageState extends State<UserPage> {
                                                           children: [
                                                             Column(
                                                                 mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
+                                                                    MainAxisSize
+                                                                        .min,
                                                                 children: [
                                                                   const Text(
                                                                     'Change Password',
                                                                     style: TextStyle(
                                                                         fontSize:
-                                                                        20.0,
+                                                                            20.0,
                                                                         fontWeight:
-                                                                        FontWeight.w700),
+                                                                            FontWeight.w700),
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
-                                                                    40.0,
+                                                                        40.0,
                                                                   ),
                                                                   const Align(
                                                                     alignment:
-                                                                    Alignment
-                                                                        .centerLeft,
+                                                                        Alignment
+                                                                            .centerLeft,
                                                                     child: Text(
                                                                       'New Password',
                                                                       style:
-                                                                      TextStyle(
+                                                                          TextStyle(
                                                                         fontFamily:
-                                                                        'OpenSans',
+                                                                            'OpenSans',
                                                                         letterSpacing:
-                                                                        0.6,
+                                                                            0.6,
                                                                         fontSize:
-                                                                        16.0,
+                                                                            16.0,
                                                                         fontWeight:
-                                                                        FontWeight.w600,
+                                                                            FontWeight.w600,
                                                                       ),
                                                                     ),
                                                                   ),
@@ -570,7 +577,7 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   Theme(
                                                                     data: Theme.of(
-                                                                        context)
+                                                                            context)
                                                                         .copyWith(
                                                                       colorScheme: ThemeData().colorScheme.copyWith(
                                                                           primary: const Color.fromARGB(
@@ -580,11 +587,11 @@ class _UserPageState extends State<UserPage> {
                                                                               106)),
                                                                     ),
                                                                     child:
-                                                                    TextFormField(
+                                                                        TextFormField(
                                                                       controller:
-                                                                      _passwordController,
+                                                                          _passwordController,
                                                                       obscureText:
-                                                                      _obscureText,
+                                                                          _obscureText,
                                                                       decoration: InputDecoration(
                                                                           prefixIcon: const Icon(Icons.password),
                                                                           suffixIcon: IconButton(
@@ -601,8 +608,8 @@ class _UserPageState extends State<UserPage> {
                                                                             100),
                                                                       ],
                                                                       autovalidateMode:
-                                                                      AutovalidateMode
-                                                                          .onUserInteraction,
+                                                                          AutovalidateMode
+                                                                              .onUserInteraction,
                                                                       validator:
                                                                           (value) {
                                                                         if (value!.isEmpty ||
@@ -615,24 +622,24 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
-                                                                    30.0,
+                                                                        30.0,
                                                                   ),
                                                                   const Align(
                                                                     alignment:
-                                                                    Alignment
-                                                                        .centerLeft,
+                                                                        Alignment
+                                                                            .centerLeft,
                                                                     child: Text(
                                                                       'Confirm Password',
                                                                       style:
-                                                                      TextStyle(
+                                                                          TextStyle(
                                                                         fontFamily:
-                                                                        'OpenSans',
+                                                                            'OpenSans',
                                                                         letterSpacing:
-                                                                        0.6,
+                                                                            0.6,
                                                                         fontSize:
-                                                                        16.0,
+                                                                            16.0,
                                                                         fontWeight:
-                                                                        FontWeight.w600,
+                                                                            FontWeight.w600,
                                                                       ),
                                                                     ),
                                                                   ),
@@ -641,7 +648,7 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   Theme(
                                                                     data: Theme.of(
-                                                                        context)
+                                                                            context)
                                                                         .copyWith(
                                                                       colorScheme: ThemeData().colorScheme.copyWith(
                                                                           primary: const Color.fromARGB(
@@ -651,11 +658,11 @@ class _UserPageState extends State<UserPage> {
                                                                               106)),
                                                                     ),
                                                                     child:
-                                                                    TextFormField(
+                                                                        TextFormField(
                                                                       controller:
-                                                                      _confirmPasswordController,
+                                                                          _confirmPasswordController,
                                                                       obscureText:
-                                                                      _obscureText,
+                                                                          _obscureText,
                                                                       decoration: InputDecoration(
                                                                           prefixIcon: const Icon(Icons.password),
                                                                           suffixIcon: IconButton(
@@ -672,12 +679,12 @@ class _UserPageState extends State<UserPage> {
                                                                             100),
                                                                       ],
                                                                       autovalidateMode:
-                                                                      AutovalidateMode
-                                                                          .onUserInteraction,
+                                                                          AutovalidateMode
+                                                                              .onUserInteraction,
                                                                       validator:
                                                                           (value) {
                                                                         if (value !=
-                                                                            _passwordController.text.toString() ||
+                                                                                _passwordController.text.toString() ||
                                                                             value!.isEmpty) {
                                                                           return 'Passwords don\'t match';
                                                                         }
@@ -686,7 +693,7 @@ class _UserPageState extends State<UserPage> {
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
-                                                                    60.0,
+                                                                        60.0,
                                                                   ),
                                                                   ElevatedButton(
                                                                       style: ElevatedButton.styleFrom(
@@ -703,163 +710,165 @@ class _UserPageState extends State<UserPage> {
                                                                               fontWeight: FontWeight.w600)),
                                                                       onPressed: !_loading
                                                                           ? () {
-                                                                        if (_formKey.currentState!.validate()) {
-                                                                          String pass = _passwordController.text.toString();
-                                                                          _changePassword(setModalState2, pass.trim());
-                                                                        }
-                                                                      }
+                                                                              if (_formKey.currentState!.validate()) {
+                                                                                String pass = _passwordController.text.toString();
+                                                                                _changePassword(setModalState2, pass.trim());
+                                                                              }
+                                                                            }
                                                                           : null,
                                                                       child: const Text('Edit Password')),
                                                                   const SizedBox(
                                                                     height:
-                                                                    50.0,
+                                                                        50.0,
                                                                   )
                                                                 ]),
                                                           ],
                                                         ))),
                                               );
                                             }));
-                                  },
-                                  child: Row(
-                                    children: const [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15.0, 0, 8.0, 0),
-                                        child: Icon(
-                                          Icons.password,
-                                          size: 30.0,
-                                          color: Color.fromARGB(255, 4, 44, 76),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
+                              },
+                              child: Row(
+                                children:  [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15.0, 0, 8.0, 0),
+                                    child: Icon(
+                                      Icons.password,
+                                      size: 30.0,
+                                      color:  Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding:
                                         EdgeInsets.fromLTRB(60.0, 0, 20.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            'Change Password',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Change Password',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
                                       ),
-                                      Padding(
-                                        padding:
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding:
                                         EdgeInsets.fromLTRB(53.0, 0, 0.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Icon(Icons.arrow_forward),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 30.0,
-                              ),
-                              Container(
-                                height: 65.0,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: const Color.fromARGB(255, 223, 220, 220),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Icon(Icons.arrow_forward),
                                     ),
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                child: InkWell(
-                                  onTap: () {
-                                    _signOutDialogBuilder(context);
-                                  },
-                                  child: Row(
-                                    children: const [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15.0, 0, 8.0, 0),
-                                        child: Icon(
-                                          Icons.logout,
-                                          size: 30.0,
-                                          color: Color.fromARGB(255, 4, 44, 76),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.fromLTRB(87.0, 0, 38.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            'Sign Out',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.fromLTRB(93.0, 0, 0.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Icon(Icons.arrow_forward),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
+                                  )
+                                ],
                               ),
-                              const SizedBox(
-                                height: 30.0,
-                              ),
-                              Container(
-                                height: 65.0,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: const Color.fromARGB(255, 223, 220, 220),
-                                    ),
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                child: InkWell(
-                                  onTap: () {
-                                    _ResetAmountDialogBuilder(context);
-                                  },
-                                  child: Row(
-                                    children: const [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15.0, 0, 8.0, 0),
-                                        child: Icon(
-                                          Icons.money,
-                                          size: 30.0,
-                                          color: Color.fromARGB(255, 4, 44, 76),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                        EdgeInsets.fromLTRB(70.0, 0, 38.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            'Reset Amount',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(60, 0, 0.0, 0),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Icon(Icons.arrow_forward),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
+                            ),
                           ),
-                        )
-                      ],
-                    )),
+                          const SizedBox(
+                            height: 30.0,
+                          ),
+                          Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 223, 220, 220),
+                                ),
+                                borderRadius: BorderRadius.circular(20.0)),
+                            child: InkWell(
+                              onTap: () {
+                                _signOutDialogBuilder(context);
+                              },
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15.0, 0, 8.0, 0),
+                                    child: Icon(
+                                      Icons.logout,
+                                      size: 30.0,
+                                      color:  Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(87.0, 0, 38.0, 0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Sign Out',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(93.0, 0, 0.0, 0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Icon(Icons.arrow_forward),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 30.0,
+                          ),
+                          Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 223, 220, 220),
+                                ),
+                                borderRadius: BorderRadius.circular(20.0)),
+                            child: InkWell(
+                              onTap: () {
+                                _ResetAmountDialogBuilder(context);
+                              },
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15.0, 0, 8.0, 0),
+                                    child: Icon(
+                                      Icons.money,
+                                      size: 30.0,
+                                      color:  Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(70.0, 0, 38.0, 0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Reset Amount',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(60, 0, 0.0, 0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Icon(Icons.arrow_forward),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                )),
               ],
             ),
           ),
@@ -999,7 +1008,8 @@ class _UserPageState extends State<UserPage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: const Text('No', style: TextStyle(fontSize: 17.0))),
+                        child:
+                            const Text('No', style: TextStyle(fontSize: 17.0))),
                     const SizedBox(
                       width: 20.0,
                     ),
@@ -1075,7 +1085,8 @@ class _UserPageState extends State<UserPage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: const Text('No', style: TextStyle(fontSize: 17.0))),
+                        child:
+                            const Text('No', style: TextStyle(fontSize: 17.0))),
                     const SizedBox(
                       width: 20.0,
                     ),
@@ -1132,9 +1143,9 @@ class _UserPageState extends State<UserPage> {
         .limit(1)
         .get()
         .then((value) => value.docs.forEach((doc) {
-      lastName = doc.data()['lastname'].toString();
-      firstName = doc.data()['firstname'].toString();
-    }))
+              lastName = doc.data()['lastname'].toString();
+              firstName = doc.data()['firstname'].toString();
+            }))
         .onError((error, stackTrace) => errorDialog(error, true));
 
     fullName = lastName + " " + firstName;
@@ -1146,10 +1157,10 @@ class _UserPageState extends State<UserPage> {
 
       img.image.resolve(const ImageConfiguration()).addListener(
           ImageStreamListener((ImageInfo image, bool synchronousCall) {
-            if (mounted) {
-              setState(() => _imageLoaded = true);
-            }
-          }));
+        if (mounted) {
+          setState(() => _imageLoaded = true);
+        }
+      }));
     }
 
     setState(() {
@@ -1179,16 +1190,16 @@ class _UserPageState extends State<UserPage> {
           .limit(1)
           .get()
           .then((value) => value.docs.forEach((doc) {
-        doc.reference.update(
-          {'firstname': firstName, 'lastname': lastName},
-        ).then((value) {
-          setModalState(() {
-            _loading = false;
-            _editAccount = false;
-            buttonName = 'Edit Information';
-          });
-        });
-      }));
+                doc.reference.update(
+                  {'firstname': firstName, 'lastname': lastName},
+                ).then((value) {
+                  setModalState(() {
+                    _loading = false;
+                    _editAccount = false;
+                    buttonName = 'Edit Information';
+                  });
+                });
+              }));
 
       setState(() {
         _loading = false;
@@ -1272,7 +1283,7 @@ class _UserPageState extends State<UserPage> {
     imagePath = 'users/profile/${user!.uid.toString() + imgExtension}';
 
     final uploadImage =
-    FirebaseStorage.instance.ref().child(imagePath).putFile(imageFile);
+        FirebaseStorage.instance.ref().child(imagePath).putFile(imageFile);
 
     final snapshot = await uploadImage.whenComplete(() => null);
 
@@ -1282,7 +1293,7 @@ class _UserPageState extends State<UserPage> {
         .updatePhotoURL(urlDownload)
         .then(
           (value) => getAllValues(),
-    )
+        )
         .onError((error, stackTrace) => errorDialog(error, true));
 
     setState(() {
@@ -1290,29 +1301,62 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
+  // Future<void> _signOut() async {
+  //   try{
+  //     setState(() {
+  //       _imageLoaded = false;
+  //       _loading = true;
+  //     });
+  //
+  //     final User? user = auth.currentUser;
+  //     await auth.signOut().then((value) {
+  //       if (user?.uid.isEmpty == null) {
+  //         WidgetsBinding.instance.addPostFrameCallback((_){
+  //           Navigator.pop(context);
+  //           Navigator.pushNamedAndRemoveUntil(
+  //               context, '/', (Route<dynamic> route) => false);
+  //         });
+  //       } else {
+  //         print("user Id ${user!.uid}");
+  //       }
+  //     });
+  //   } catch(e){
+  //     print('Failed to sign out');
+  //     print(e.toString());
+  //     return;
+  //   }
+  // }
+
   Future<void> _signOut() async {
-    try{
+    try {
+      // Show loading state while signing out
       setState(() {
         _imageLoaded = false;
         _loading = true;
       });
 
       final User? user = auth.currentUser;
-      await auth.signOut().then((value) {
-        if (user?.uid.isEmpty == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_){
-            Navigator.pop(context);
-            Navigator.pushNamedAndRemoveUntil(
-                context, '/', (Route<dynamic> route) => false);
-          });
-        } else {
-          print("user Id ${user!.uid}");
-        }
+      if (user != null) {
+        await auth.signOut();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          // Navigate to the home page after signing out
+          Navigator.pop(context);
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/', (Route<dynamic> route) => false);
+        });
+      } else {
+        // Handle the case when the user is not signed in
+        print("User not signed in");
+      }
+
+      // Reset loading state after successful sign-out
+      setState(() {
+        _loading = false;
       });
-    } catch(e){
-      print('Fail to sign out');
-      print(e.toString());
-      return;
+    } catch (e) {
+      // Handle sign-out errors
+      print('Failed to sign out: ${e.toString()}');
+      // You can show an error message to the user or take appropriate action
     }
   }
 
@@ -1330,8 +1374,8 @@ class _UserPageState extends State<UserPage> {
         .limit(1)
         .get()
         .then((value) => value.docs.forEach((doc) {
-      data = doc.data()['amountReset'];
-    }));
+              data = doc.data()['amountReset'];
+            }));
 
     if (data <= 3) {
       await FirebaseFirestore.instance
@@ -1340,13 +1384,13 @@ class _UserPageState extends State<UserPage> {
           .limit(1)
           .get()
           .then((value) => value.docs.forEach((doc) {
-        doc.reference.update({
-          'amountReset': data + 1,
-          'lastResetTime': DateTime.now()
-        }).then((value) {}, onError: (e) {
-          errorDialog(e.toString(), true);
-        });
-      }));
+                doc.reference.update({
+                  'amountReset': data + 1,
+                  'lastResetTime': DateTime.now()
+                }).then((value) {}, onError: (e) {
+                  errorDialog(e.toString(), true);
+                });
+              }));
 
       await FirebaseFirestore.instance
           .collection("users")
@@ -1354,12 +1398,12 @@ class _UserPageState extends State<UserPage> {
           .limit(1)
           .get()
           .then((value) => value.docs.forEach((doc) {
-        doc.reference.update({'amount': '0'}).then((value) {
-          errorDialog('RESET $data OUT OF 3 SUCCESSFUL', true);
-        }, onError: (e) {
-          errorDialog(e.toString(), true);
-        });
-      }));
+                doc.reference.update({'amount': '0'}).then((value) {
+                  errorDialog('RESET $data OUT OF 3 SUCCESSFUL', true);
+                }, onError: (e) {
+                  errorDialog(e.toString(), true);
+                });
+              }));
     } else {
       errorDialog('RESET LIMIT EXCEEDED, TRY AGAIN IN THE NEXT 24 HOURS', true);
     }
@@ -1379,4 +1423,3 @@ class _UserPageState extends State<UserPage> {
         )));
   }
 }
-

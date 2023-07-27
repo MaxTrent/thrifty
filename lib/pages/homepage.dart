@@ -27,8 +27,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[0],
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
         items: const [
           BottomNavigationBarItem(
             label: 'Home',
@@ -42,9 +43,8 @@ class _HomePageState extends State<HomePage> {
         ],
         selectedItemColor: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
         onTap: (index){
-          _selectedIndex = index;
           setState(() {
-
+            _selectedIndex = index;
           });
         },
 

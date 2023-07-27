@@ -8,7 +8,7 @@ import 'package:thrifty/models/models.dart';
 // import 'custom_alert_dialog.dart';
 
 class DatabaseService {
-  FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
 

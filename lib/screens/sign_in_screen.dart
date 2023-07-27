@@ -38,10 +38,10 @@ class _SignInScreenState extends State<SignInScreen> {
   void checkIfSignedIn() {
     User? user = auth.currentUser;
 
-    if (user != null && user!.uid.isEmpty) {
+    if (user != null && user.uid.isEmpty) {
       print('Signed In');
     } else {
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacementNamed(context, '/homepage');
       });
     }
@@ -87,7 +87,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   error(errorMessage) {
-    SchedulerBinding.instance!.addPostFrameCallback((_) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       if (_messengerKey.currentState != null) {
         _messengerKey.currentState!.showSnackBar(
           SnackBar(
