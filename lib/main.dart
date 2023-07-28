@@ -14,17 +14,38 @@ WidgetsFlutterBinding.ensureInitialized();
       MyApp(appTheme: AppTheme(),));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.appTheme});
-
   final AppTheme appTheme;
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>()!;
+}
+
+class _MyAppState extends State<MyApp> {
+ThemeMode _themeMode = ThemeMode.system;
+  bool isDark = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void changeTheme(ThemeMode themeMode){
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: appTheme.light,
-        darkTheme: appTheme.dark,
-        themeMode: ThemeMode.dark,
+        theme: widget.appTheme.light,
+        darkTheme: widget.appTheme.dark,
+        themeMode: _themeMode,
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {

@@ -12,6 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as p;
 import 'package:thrifty/widgets/widgets.dart';
 
+import '../main.dart';
+
 class UserPage extends StatefulWidget {
   const UserPage({Key? key}) : super(key: key);
 
@@ -20,6 +22,7 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  bool _isDark = false;
   bool _imageLoaded = false;
   String fullName = '',
       firstName = '',
@@ -57,7 +60,7 @@ class _UserPageState extends State<UserPage> {
       children: [
         Scaffold(
           appBar: AppBar(
-            leading: BackButton(color:  Theme.of(context).colorScheme.primary),
+            leading: BackButton(color: Theme.of(context).colorScheme.primary),
             // backgroundColor: const Color.fromARGB(255, 242, 240, 240),
             automaticallyImplyLeading: false,
             title: Text(
@@ -83,8 +86,8 @@ class _UserPageState extends State<UserPage> {
                       height: 270.0,
                       decoration: BoxDecoration(
                         border: Border.all(
-                          // color: const Color.fromARGB(255, 223, 220, 220),
-                        ),
+                            // color: const Color.fromARGB(255, 223, 220, 220),
+                            ),
                         borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(40.0),
                             bottomRight: Radius.circular(40.0)),
@@ -145,6 +148,7 @@ class _UserPageState extends State<UserPage> {
                                               shape: const CircleBorder(),
                                               child: const Icon(
                                                 Icons.camera_alt_outlined,
+                                                color: Colors.black,
                                               ),
                                             ))
                                       ],
@@ -172,6 +176,7 @@ class _UserPageState extends State<UserPage> {
                                               shape: const CircleBorder(),
                                               child: const Icon(
                                                 Icons.camera_alt_outlined,
+                                                color: Colors.black,
                                               ),
                                             )),
                                       ],
@@ -179,14 +184,11 @@ class _UserPageState extends State<UserPage> {
                           const SizedBox(
                             height: 30.0,
                           ),
-                          Text(
-                            fullName,
-                            style: const TextStyle(
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromARGB(255, 4, 44, 76),
-                            ),
-                          ),
+                          Text(fullName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline2!
+                                  .copyWith(color: Colors.white)),
                         ],
                       ),
                     ),
@@ -258,84 +260,67 @@ class _UserPageState extends State<UserPage> {
                                                                     height:
                                                                         40.0,
                                                                   ),
-                                                                  const Align(
+                                                                  Align(
                                                                     alignment:
                                                                         Alignment
                                                                             .centerLeft,
                                                                     child: Text(
                                                                       'First Name',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontFamily:
-                                                                            'OpenSans',
-                                                                        letterSpacing:
-                                                                            0.6,
-                                                                        fontSize:
-                                                                            16.0,
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                      ),
+                                                                      style: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .headline3,
                                                                     ),
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 5.0,
                                                                   ),
-                                                                  Theme(
-                                                                    data: Theme.of(
-                                                                            context)
-                                                                        .copyWith(
-                                                                      colorScheme: ThemeData().colorScheme.copyWith(
-                                                                          primary: const Color.fromARGB(
-                                                                              255,
-                                                                              44,
-                                                                              79,
-                                                                              106)),
+                                                                  TextFormField(
+                                                                    enabled:
+                                                                        _editAccount,
+                                                                    controller:
+                                                                        _firstNameController,
+                                                                    inputFormatters: <
+                                                                        TextInputFormatter>[
+                                                                      FilteringTextInputFormatter
+                                                                          .allow(
+                                                                              RegExp("[a-zA-Z ]")),
+                                                                      LengthLimitingTextInputFormatter(
+                                                                          100),
+                                                                    ],
+                                                                    decoration:
+                                                                        const InputDecoration(
+                                                                      focusedBorder:
+                                                                          OutlineInputBorder(),
+                                                                      prefixIcon:
+                                                                          Icon(Icons
+                                                                              .person_outline),
+                                                                      border:
+                                                                          OutlineInputBorder(),
                                                                     ),
-                                                                    child:
-                                                                        TextFormField(
-                                                                      enabled:
-                                                                          _editAccount,
-                                                                      controller:
-                                                                          _firstNameController,
-                                                                      inputFormatters: <
-                                                                          TextInputFormatter>[
-                                                                        FilteringTextInputFormatter.allow(
-                                                                            RegExp("[a-zA-Z ]")),
-                                                                        LengthLimitingTextInputFormatter(
-                                                                            100),
-                                                                      ],
-                                                                      decoration:
-                                                                          const InputDecoration(
-                                                                        focusedBorder:
-                                                                            OutlineInputBorder(),
-                                                                        prefixIcon:
-                                                                            Icon(Icons.person_outline),
-                                                                        border:
-                                                                            OutlineInputBorder(),
-                                                                      ),
-                                                                      keyboardType:
-                                                                          TextInputType
-                                                                              .text,
-                                                                      textCapitalization:
-                                                                          TextCapitalization
-                                                                              .sentences,
-                                                                      autovalidateMode:
-                                                                          AutovalidateMode
-                                                                              .onUserInteraction,
-                                                                      onFieldSubmitted:
-                                                                          (value) {},
-                                                                      validator:
-                                                                          (value) {
-                                                                        if (value!
-                                                                            .trim()
-                                                                            .isEmpty) {
-                                                                          return 'First Name is required';
-                                                                        } else if (value
-                                                                            .startsWith(RegExp(r'[0-9]'))) {
-                                                                          return 'First name is not valid';
-                                                                        }
-                                                                      },
-                                                                    ),
+                                                                    keyboardType:
+                                                                        TextInputType
+                                                                            .text,
+                                                                    textCapitalization:
+                                                                        TextCapitalization
+                                                                            .sentences,
+                                                                    autovalidateMode:
+                                                                        AutovalidateMode
+                                                                            .onUserInteraction,
+                                                                    onFieldSubmitted:
+                                                                        (value) {},
+                                                                    validator:
+                                                                        (value) {
+                                                                      if (value!
+                                                                          .trim()
+                                                                          .isEmpty) {
+                                                                        return 'First Name is required';
+                                                                      } else if (value
+                                                                          .startsWith(
+                                                                              RegExp(r'[0-9]'))) {
+                                                                        return 'First name is not valid';
+                                                                      }
+                                                                    },
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
@@ -425,30 +410,20 @@ class _UserPageState extends State<UserPage> {
                                                                         60.0,
                                                                   ),
                                                                   ElevatedButton(
-                                                                      style: ElevatedButton.styleFrom(
-                                                                          primary: const Color.fromARGB(
-                                                                              255,
-                                                                              4,
-                                                                              44,
-                                                                              76),
-                                                                          minimumSize: const Size.fromHeight(
-                                                                              60),
-                                                                          textStyle: const TextStyle(
-                                                                              color: Colors.white,
-                                                                              fontSize: 20,
-                                                                              fontWeight: FontWeight.w600)),
-                                                                      onPressed: !_loading
-                                                                          ? () {
-                                                                              String name1, name2;
-                                                                              name1 = _firstNameController.text.toString();
+                                                                      onPressed:
+                                                                          !_loading
+                                                                              ? () {
+                                                                                  String name1, name2;
+                                                                                  name1 = _firstNameController.text.toString();
 
-                                                                              name2 = _lastNameController.text.toString();
-                                                                              if (_formKey.currentState!.validate()) {
-                                                                                editAccountInfo(setModalState, name1.trim(), name2.trim());
-                                                                              }
-                                                                            }
-                                                                          : null,
-                                                                      child: Text(buttonName)),
+                                                                                  name2 = _lastNameController.text.toString();
+                                                                                  if (_formKey.currentState!.validate()) {
+                                                                                    editAccountInfo(setModalState, name1.trim(), name2.trim());
+                                                                                  }
+                                                                                }
+                                                                              : null,
+                                                                      child: Text(
+                                                                          buttonName)),
                                                                   const SizedBox(
                                                                     height:
                                                                         50.0,
@@ -462,12 +437,13 @@ class _UserPageState extends State<UserPage> {
                               child: Row(
                                 children: [
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(15.0, 0, 8.0, 0),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15.0, 0, 8.0, 0),
                                     child: Icon(
                                       Icons.person_outline,
                                       size: 30.0,
-                                      color:  Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                   const Padding(
@@ -575,148 +551,104 @@ class _UserPageState extends State<UserPage> {
                                                                   const SizedBox(
                                                                     height: 5.0,
                                                                   ),
-                                                                  Theme(
-                                                                    data: Theme.of(
-                                                                            context)
-                                                                        .copyWith(
-                                                                      colorScheme: ThemeData().colorScheme.copyWith(
-                                                                          primary: const Color.fromARGB(
-                                                                              255,
-                                                                              44,
-                                                                              79,
-                                                                              106)),
-                                                                    ),
-                                                                    child:
-                                                                        TextFormField(
-                                                                      controller:
-                                                                          _passwordController,
-                                                                      obscureText:
-                                                                          _obscureText,
-                                                                      decoration: InputDecoration(
-                                                                          prefixIcon: const Icon(Icons.password),
-                                                                          suffixIcon: IconButton(
-                                                                              onPressed: () {
-                                                                                setModalState2(() {
-                                                                                  _obscureText = !_obscureText;
-                                                                                });
-                                                                              },
-                                                                              icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off)),
-                                                                          border: const OutlineInputBorder(),
-                                                                          hintText: '*******'),
-                                                                      inputFormatters: [
-                                                                        LengthLimitingTextInputFormatter(
-                                                                            100),
-                                                                      ],
-                                                                      autovalidateMode:
-                                                                          AutovalidateMode
-                                                                              .onUserInteraction,
-                                                                      validator:
-                                                                          (value) {
-                                                                        if (value!.isEmpty ||
-                                                                            value.length <
-                                                                                6) {
-                                                                          return 'Password must be at least 6  character';
-                                                                        }
-                                                                      },
-                                                                    ),
+                                                                  TextFormField(
+                                                                    controller:
+                                                                        _passwordController,
+                                                                    obscureText:
+                                                                        _obscureText,
+                                                                    decoration: InputDecoration(
+                                                                        prefixIcon: const Icon(Icons.password),
+                                                                        suffixIcon: IconButton(
+                                                                            onPressed: () {
+                                                                              setModalState2(() {
+                                                                                _obscureText = !_obscureText;
+                                                                              });
+                                                                            },
+                                                                            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off)),
+                                                                        border: const OutlineInputBorder(),
+                                                                        hintText: '*******'),
+                                                                    inputFormatters: [
+                                                                      LengthLimitingTextInputFormatter(
+                                                                          100),
+                                                                    ],
+                                                                    autovalidateMode:
+                                                                        AutovalidateMode
+                                                                            .onUserInteraction,
+                                                                    validator:
+                                                                        (value) {
+                                                                      if (value!
+                                                                              .isEmpty ||
+                                                                          value.length <
+                                                                              6) {
+                                                                        return 'Password must be at least 6  character';
+                                                                      }
+                                                                    },
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
                                                                         30.0,
                                                                   ),
-                                                                  const Align(
+                                                                  Align(
                                                                     alignment:
                                                                         Alignment
                                                                             .centerLeft,
                                                                     child: Text(
-                                                                      'Confirm Password',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontFamily:
-                                                                            'OpenSans',
-                                                                        letterSpacing:
-                                                                            0.6,
-                                                                        fontSize:
-                                                                            16.0,
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
-                                                                      ),
-                                                                    ),
+                                                                        'Confirm Password',
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .headline3),
                                                                   ),
                                                                   const SizedBox(
                                                                     height: 5.0,
                                                                   ),
-                                                                  Theme(
-                                                                    data: Theme.of(
-                                                                            context)
-                                                                        .copyWith(
-                                                                      colorScheme: ThemeData().colorScheme.copyWith(
-                                                                          primary: const Color.fromARGB(
-                                                                              255,
-                                                                              44,
-                                                                              79,
-                                                                              106)),
-                                                                    ),
-                                                                    child:
-                                                                        TextFormField(
-                                                                      controller:
-                                                                          _confirmPasswordController,
-                                                                      obscureText:
-                                                                          _obscureText,
-                                                                      decoration: InputDecoration(
-                                                                          prefixIcon: const Icon(Icons.password),
-                                                                          suffixIcon: IconButton(
-                                                                              onPressed: () {
-                                                                                setModalState2(() {
-                                                                                  _obscureText = !_obscureText;
-                                                                                });
-                                                                              },
-                                                                              icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off)),
-                                                                          border: const OutlineInputBorder(),
-                                                                          hintText: '*******'),
-                                                                      inputFormatters: [
-                                                                        LengthLimitingTextInputFormatter(
-                                                                            100),
-                                                                      ],
-                                                                      autovalidateMode:
-                                                                          AutovalidateMode
-                                                                              .onUserInteraction,
-                                                                      validator:
-                                                                          (value) {
-                                                                        if (value !=
-                                                                                _passwordController.text.toString() ||
-                                                                            value!.isEmpty) {
-                                                                          return 'Passwords don\'t match';
-                                                                        }
-                                                                      },
-                                                                    ),
+                                                                  TextFormField(
+                                                                    controller:
+                                                                        _confirmPasswordController,
+                                                                    obscureText:
+                                                                        _obscureText,
+                                                                    decoration: InputDecoration(
+                                                                        prefixIcon: const Icon(Icons.password),
+                                                                        suffixIcon: IconButton(
+                                                                            onPressed: () {
+                                                                              setModalState2(() {
+                                                                                _obscureText = !_obscureText;
+                                                                              });
+                                                                            },
+                                                                            icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off)),
+                                                                        border: const OutlineInputBorder(),
+                                                                        hintText: '*******'),
+                                                                    inputFormatters: [
+                                                                      LengthLimitingTextInputFormatter(
+                                                                          100),
+                                                                    ],
+                                                                    autovalidateMode:
+                                                                        AutovalidateMode
+                                                                            .onUserInteraction,
+                                                                    validator:
+                                                                        (value) {
+                                                                      if (value !=
+                                                                              _passwordController.text.toString() ||
+                                                                          value!.isEmpty) {
+                                                                        return 'Passwords don\'t match';
+                                                                      }
+                                                                    },
                                                                   ),
                                                                   const SizedBox(
                                                                     height:
                                                                         60.0,
                                                                   ),
                                                                   ElevatedButton(
-                                                                      style: ElevatedButton.styleFrom(
-                                                                          primary: const Color.fromARGB(
-                                                                              255,
-                                                                              4,
-                                                                              44,
-                                                                              76),
-                                                                          minimumSize: const Size.fromHeight(
-                                                                              60),
-                                                                          textStyle: const TextStyle(
-                                                                              color: Colors.white,
-                                                                              fontSize: 20,
-                                                                              fontWeight: FontWeight.w600)),
-                                                                      onPressed: !_loading
-                                                                          ? () {
-                                                                              if (_formKey.currentState!.validate()) {
-                                                                                String pass = _passwordController.text.toString();
-                                                                                _changePassword(setModalState2, pass.trim());
-                                                                              }
-                                                                            }
-                                                                          : null,
-                                                                      child: const Text('Edit Password')),
+                                                                      onPressed:
+                                                                          !_loading
+                                                                              ? () {
+                                                                                  if (_formKey.currentState!.validate()) {
+                                                                                    String pass = _passwordController.text.toString();
+                                                                                    _changePassword(setModalState2, pass.trim());
+                                                                                  }
+                                                                                }
+                                                                              : null,
+                                                                      child: const Text(
+                                                                          'Edit Password')),
                                                                   const SizedBox(
                                                                     height:
                                                                         50.0,
@@ -728,14 +660,15 @@ class _UserPageState extends State<UserPage> {
                                             }));
                               },
                               child: Row(
-                                children:  [
+                                children: [
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         15.0, 0, 8.0, 0),
                                     child: Icon(
                                       Icons.password,
                                       size: 30.0,
-                                      color:  Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                   const Padding(
@@ -786,7 +719,8 @@ class _UserPageState extends State<UserPage> {
                                     child: Icon(
                                       Icons.logout,
                                       size: 30.0,
-                                      color:  Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                   const Padding(
@@ -827,7 +761,7 @@ class _UserPageState extends State<UserPage> {
                                 borderRadius: BorderRadius.circular(20.0)),
                             child: InkWell(
                               onTap: () {
-                                _ResetAmountDialogBuilder(context);
+                                _resetAmountDialogBuilder(context);
                               },
                               child: Row(
                                 children: [
@@ -837,7 +771,8 @@ class _UserPageState extends State<UserPage> {
                                     child: Icon(
                                       Icons.money,
                                       size: 30.0,
-                                      color:  Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                     ),
                                   ),
                                   const Padding(
@@ -860,6 +795,57 @@ class _UserPageState extends State<UserPage> {
                                       child: Icon(Icons.arrow_forward),
                                     ),
                                   )
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 30.0,
+                          ),
+                          Container(
+                            height: 65.0,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color:
+                                      const Color.fromARGB(255, 223, 220, 220),
+                                ),
+                                borderRadius: BorderRadius.circular(20.0)),
+                            child: InkWell(
+                              onTap: () {
+                                _isDark
+                                    ? MyApp.of(context)
+                                        .changeTheme(ThemeMode.light)
+                                    : MyApp.of(context)
+                                        .changeTheme(ThemeMode.dark);
+                                setState(() {
+                                  _isDark = !_isDark;
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        15.0, 0, 8.0, 0),
+                                    child: Icon(
+                                      Icons.dark_mode_outlined,
+                                      size: 30.0,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(70.0, 0, 38.0, 0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Change Appearance',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -969,7 +955,7 @@ class _UserPageState extends State<UserPage> {
         builder: (BuildContext context) {
           return Dialog(
             elevation: 0,
-            backgroundColor: const Color(0xffffffff),
+            // backgroundColor: const Color(0xffffffff),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
@@ -979,14 +965,14 @@ class _UserPageState extends State<UserPage> {
                 const SizedBox(
                   height: 20.0,
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(50.0, 20, 50.0, 20),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(50.0, 20, 50.0, 20),
                   child: Center(
                     child: Text(
-                      'Are you sure you want to sign out ? ',
+                      'Are you sure you want to sign out ?',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.w800),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ),
@@ -1000,32 +986,38 @@ class _UserPageState extends State<UserPage> {
                     ),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            elevation: 5.0,
-                            primary: const Color.fromARGB(255, 183, 181, 181),
+                            backgroundColor: Colors.transparent,
                             minimumSize: const Size(100, 50),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0))),
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child:
-                            const Text('No', style: TextStyle(fontSize: 17.0))),
+                        child: Text(
+                          'No',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(
+                                  color: Theme.of(context).colorScheme.primary),
+                        )),
                     const SizedBox(
                       width: 20.0,
                     ),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            elevation: 5.0,
-                            primary: const Color.fromARGB(255, 4, 44, 76),
                             minimumSize: const Size(100, 50),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0))),
                         onPressed: () {
                           _signOut();
                         },
-                        child: const Text(
+                        child: Text(
                           'Yes',
-                          style: TextStyle(fontSize: 17.0),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(color: Colors.white),
                         )),
                   ],
                 ),
@@ -1038,15 +1030,12 @@ class _UserPageState extends State<UserPage> {
         });
   }
 
-  Future<void> _ResetAmountDialogBuilder(BuildContext context) {
+  Future<void> _resetAmountDialogBuilder(BuildContext context) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          barrierColor:
-          Colors.black26;
           return Dialog(
             elevation: 0,
-            backgroundColor: const Color(0xffffffff),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
@@ -1056,14 +1045,14 @@ class _UserPageState extends State<UserPage> {
                 const SizedBox(
                   height: 20.0,
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(50.0, 20, 50.0, 20),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(50.0, 20, 50.0, 20),
                   child: Center(
                     child: Text(
-                      'are you sure you want to reset amount ? ',
+                      'Are you sure you want to reset amount ? ',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.w800),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
                 ),
@@ -1077,34 +1066,39 @@ class _UserPageState extends State<UserPage> {
                     ),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            elevation: 5.0,
-                            primary: const Color.fromARGB(255, 183, 181, 181),
+                            backgroundColor: Colors.transparent,
                             minimumSize: const Size(100, 50),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0))),
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child:
-                            const Text('No', style: TextStyle(fontSize: 17.0))),
+                        child: Text('No',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary))),
                     const SizedBox(
                       width: 20.0,
                     ),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            elevation: 5.0,
-                            primary: const Color.fromARGB(255, 4, 44, 76),
                             minimumSize: const Size(100, 50),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0))),
                         onPressed: () {
                           Navigator.pop(context);
-
                           _resetAmount();
                         },
-                        child: const Text(
+                        child: Text(
                           'Yes',
-                          style: TextStyle(fontSize: 17.0),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1!
+                              .copyWith(color: Colors.white),
                         )),
                   ],
                 ),
