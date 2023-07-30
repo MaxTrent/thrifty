@@ -13,6 +13,7 @@ import 'package:path/path.dart' as p;
 import 'package:thrifty/widgets/widgets.dart';
 
 import '../main.dart';
+import '../theme.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({Key? key}) : super(key: key);
@@ -85,6 +86,7 @@ class _UserPageState extends State<UserPage> {
                     Container(
                       height: 270.0,
                       decoration: BoxDecoration(
+                        color: AppColors.secondary,
                         border: Border.all(
                             // color: const Color.fromARGB(255, 223, 220, 220),
                             ),
@@ -92,12 +94,12 @@ class _UserPageState extends State<UserPage> {
                             bottomLeft: Radius.circular(40.0),
                             bottomRight: Radius.circular(40.0)),
                         // color: const Color.fromARGB(255, 242, 240, 240),
-                        boxShadow: const [
-                          BoxShadow(
-                              // color: Colors.grey, //New
-                              blurRadius: 25.0,
-                              offset: Offset(0, -10))
-                        ],
+                        // boxShadow: const [
+                        //   BoxShadow(
+                        //       // color: Colors.grey, //New
+                        //       blurRadius: 25.0,
+                        //       offset: Offset(0, -10))
+                        // ],
                       ),
                       child: Column(
                         children: [
@@ -157,6 +159,7 @@ class _UserPageState extends State<UserPage> {
                                       clipBehavior: Clip.none,
                                       children: [
                                         const CircleAvatar(
+                                          backgroundColor: Colors.white,
                                           radius: 80.0,
                                           backgroundImage:
                                               AssetImage('assets/profile.png'),

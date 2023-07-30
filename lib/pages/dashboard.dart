@@ -177,8 +177,7 @@ class _DashboardPageState extends State<DashboardPage>
                                             borderRadius:
                                                 BorderRadius.circular(30),
                                           ),
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 35, 63, 105),
+                                          backgroundColor: AppColors.secondary,
                                           minimumSize:
                                               const Size.fromHeight(60),
                                           textStyle: const TextStyle(
@@ -239,7 +238,7 @@ class _DashboardPageState extends State<DashboardPage>
               children: [
                 Container(
                   decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 35, 63, 105),
+                      color: AppColors.secondary,
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(15.0))),
                   child: Padding(
@@ -302,7 +301,7 @@ class _DashboardPageState extends State<DashboardPage>
                         size: 40.0,
                       ),
                       circularStrokeCap: CircularStrokeCap.round,
-                      progressColor: Colors.blue,
+                      progressColor: AppColors.secondary,
                       widgetIndicator: const RotatedBox(
                         quarterTurns: 1,
                       ),
