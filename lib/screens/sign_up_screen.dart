@@ -360,7 +360,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 : null,
                             child: Text(
                               'Create Account',
-                              style:Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).colorScheme.primary),
+                              style:Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white),
                             )),
                         const SizedBox(
                           height: 10.0,
