@@ -24,7 +24,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    checkIfSignedIn();
+    // checkIfSignedIn();
   }
 
   @override
