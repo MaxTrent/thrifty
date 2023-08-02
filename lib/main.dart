@@ -47,9 +47,10 @@ ThemeMode _themeMode = ThemeMode.system;
         darkTheme: widget.appTheme.dark,
         themeMode: _themeMode,
         debugShowCheckedModeBanner: false,
-        initialRoute: '/',
+        initialRoute: '/splashscreen',
         routes: {
           '/': (context) => const SignInScreen(),
+          '/splashscreen': (context) => const SplashScreen(),
           '/dashboard': (context) => const DashboardPage(),
           '/signup': (context) => const SignUpScreen(),
           '/homepage': (context) => const HomePage(),
