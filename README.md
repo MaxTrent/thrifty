@@ -1,16 +1,5 @@
 # thrifty
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+An expenses and budget tracking app
+[device-2024-02-27-143253.webm](https://github.com/MaxTrent/thrifty/assets/83916293/a2f99e3b-b23b-411f-a9d5-23f8a96b05e6)
+[device-2024-02-27-143043.webm](https://github.com/MaxTrent/thrifty/assets/83916293/40f5b266-b8c2-4aad-8175-685375e38a46)
